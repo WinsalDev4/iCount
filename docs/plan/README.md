@@ -27,6 +27,7 @@ Leyenda de estado: ⏳ pendiente · 🚧 en curso · ✅ hecha.
    - Sesión **Opus** (carpeta `iCount`): `/tarea A-1.1`, luego `A-1.2`…
    - Sesión **Sonnet** (carpeta `iCount-b`): `/tarea B-1.1`, luego `B-1.2`…
    - Para saber qué toca: `/estado`.
+   - **Preparación global:** las `X.0` de las fases 3–7 se hacen de una vez en [G.0](fase-g-preparacion-global.md) (un PR por fase). Con G.0 hecha, cada pista avanza por su roadmap sin esperar a la otra; ver [PROTOCOLO.md](PROTOCOLO.md#modo-de-preparación-global).
 3. **Cierre (sesión Opus):** `/tarea 1.9`, que integra, prueba, marca la fase y publica la release.
 
 Cada tarea tiene en su fichero de fase: rama, dependencias, **ficheros exclusivos**, criterios de hecho y un **prompt específico**. Puedes pegar ese prompt tal cual o usar `/tarea <ID>`, que hace lo mismo.
