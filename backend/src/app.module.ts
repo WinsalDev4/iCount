@@ -3,6 +3,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 
 import { AuthModule } from './modules/auth/auth.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { HouseholdsModule } from './modules/households/households.module.js';
 import { NotesModule } from './modules/notes/notes.module.js';
 import { SharedKernelModule } from './shared/application/shared-kernel.module.js';
 import { AuthCoreModule } from './shared/auth/auth-core.module.js';
@@ -24,6 +25,7 @@ export class AppModule {
     const featureModules = [
       HealthModule,
       AuthModule,
+      HouseholdsModule,
       // The template module is a reference for new modules, not a product feature.
       ...(config.nodeEnv === 'production' ? [] : [NotesModule]),
     ];

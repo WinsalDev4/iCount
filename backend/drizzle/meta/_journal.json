@@ -15,6 +15,13 @@
       "when": 1791933273281,
       "tag": "0001_auth",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791933678725,
+      "tag": "0002_households",
+      "breakpoints": true
     }
   ]
 }
