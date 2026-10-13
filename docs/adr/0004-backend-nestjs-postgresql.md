@@ -1,6 +1,6 @@
 # ADR-0004: Backend con NestJS (TypeScript) + PostgreSQL
 
-- **Estado:** Propuesto (pendiente de confirmación)
+- **Estado:** Aceptado (confirmado el 2026-10-13)
 - **Fecha:** 2026-10-13
 
 ## Contexto
@@ -19,7 +19,7 @@ Hace falta una API para usuarios, economías compartidas (households), movimient
    - ✅ Rapidísimo para arrancar (auth, BD, realtime).
    - ❌ La lógica de negocio acaba en reglas/funciones dispersas; luce menos en un portfolio de ingeniería.
 
-## Decisión (propuesta)
+## Decisión
 **NestJS + PostgreSQL**, con Clean Architecture por módulo (domain / application / infrastructure / interface). ORM a decidir en su propio ADR (Prisma vs Drizzle).
 
 ## Por qué
