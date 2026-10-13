@@ -34,8 +34,10 @@ Cada propuesta = **dirección visual** (colores, tipografía, formas) × **maque
 | 09 Hogar compartido | Balance | Reparto visual | Actividad |
 | 10 Asistente IA | Conversación | Hallazgos | Plan e hitos |
 
-## Decisión pendiente
-Elegir **una dirección visual** para toda la app y **una maquetación por pantalla**. Con eso se definirán los design tokens en `mobile/src/shared/ui/theme.ts` y se registrará la decisión en un ADR.
+## Decisión (2026-10-13)
+**Dirección 02 · Midnight Glass** para toda la app, con la maquetación que tiene la propuesta 02 en cada página del lienzo. Detalle, tabla de maquetaciones y tokens en [ADR-0009](../adr/0009-direccion-visual-midnight-glass.md). Tokens en código: `mobile/src/shared/ui/theme.ts`.
+
+Para implementar una pantalla: abre su página en el lienzo y mira la **propuesta 02**.
 
 ## Datos de ejemplo usados
 Hogar "Casa Ana & Leo", octubre de 2026: ingresos 3.850 €, gastos 2.315,25 €, disponible 1.534,75 €. Deudas: coche 8.640 € (6,9%), tarjeta 1.250 € (21%), préstamo personal 3.200 € (5,9%). Son coherentes entre pantallas para poder comparar.

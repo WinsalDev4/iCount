@@ -50,5 +50,29 @@ No se puede compilar iOS en local sin macOS. Opciones:
 - **EAS Build** (`npx eas-cli@latest build --platform ios --profile development`) compila en la nube.
 - Probar en un iPhone físico con el development build instalado desde EAS.
 
-## Editor recomendado
-VS Code con: ESLint, Prettier, Expo Tools, React Native Tools. (Android Studio sigue siendo útil para el emulador, Logcat y el Layout Inspector.)
+## Editor: VS Code ([ADR-0010](../adr/0010-herramientas-y-builds.md))
+Abre la **carpeta raíz** `iCount` (no `mobile/`). El repo trae:
+- `.vscode/extensions.json`: VS Code sugiere instalar las extensiones (ya instaladas en este equipo): ESLint, Prettier, Expo Tools, React Native Tools, EditorConfig y Jest.
+- `.vscode/settings.json`: formatear al guardar con Prettier, *fix* de ESLint al guardar, TypeScript del proyecto y Jest apuntando a `mobile/`.
+
+Android Studio queda para el SDK Manager, el emulador (Device Manager), Logcat y el Layout Inspector.
+
+## Dos sesiones en paralelo (Opus + Sonnet)
+Ver [docs/plan/PROTOCOLO.md](../plan/PROTOCOLO.md). Resumen:
+
+```bash
+cd E:/Documentos/GIT/iCount
+git worktree add ../iCount-b develop
+```
+
+- Abre `iCount` (pista A, Opus) e `iCount-b` (pista B, Sonnet) como dos sesiones o ventanas de VS Code distintas.
+- Cada carpeta necesita su `npm install`. La pista B arranca Metro con `npx expo start --port 8082`.
+
+## Builds en la nube (EAS)
+```bash
+npx eas-cli@latest login
+npx eas-cli@latest init          # solo la primera vez
+npm run build:android:dev -w mobile
+npm run build:ios:dev -w mobile  # requiere Apple Developer Program para instalar en iPhone
+```
+(Antes de la tarea 1.0, que introduce los workspaces, ejecuta los scripts desde `mobile/` sin `-w mobile`.)
