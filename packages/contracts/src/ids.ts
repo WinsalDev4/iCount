@@ -20,3 +20,11 @@ export const recurringPaymentIdSchema = z.uuid().brand<'RecurringPaymentId'>();
 export type BudgetId = z.infer<typeof budgetIdSchema>;
 export type DebtId = z.infer<typeof debtIdSchema>;
 export type RecurringPaymentId = z.infer<typeof recurringPaymentIdSchema>;
+
+export const settlementIdSchema = z.uuid().brand<'SettlementId'>();
+export const activityIdSchema = z.uuid().brand<'ActivityId'>();
+export const commentIdSchema = z.uuid().brand<'CommentId'>();
+
+export type SettlementId = z.infer<typeof settlementIdSchema>;
+export type ActivityId = z.infer<typeof activityIdSchema>;
+export type CommentId = z.infer<typeof commentIdSchema>;
