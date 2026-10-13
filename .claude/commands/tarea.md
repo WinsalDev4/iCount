@@ -9,4 +9,4 @@ Ejecuta la tarea **$ARGUMENTS** del plan de iCount.
 2. Comprueba que estás en la carpeta de tu pista (A → `iCount`, B → `iCount-b`) y que todas sus dependencias están marcadas `[x]` en `origin/develop` (haz `git fetch origin` antes). Crea la rama con `git switch -c feature/<id>-<slug> origin/develop`; nunca hagas `git checkout develop` en `iCount-b`. Si falta algo, **para y dímelo** sin escribir código.
 3. Sigue los "Pasos de cualquier tarea" del protocolo y el **Prompt** de la sección. Respeta estrictamente los **ficheros exclusivos**.
 4. Antes de usar cualquier API de Expo o React Native, consulta la documentación versionada (ver `mobile/AGENTS.md`).
-5. Termina con: casilla `[x]` marcada, verificación en verde, PR abierto a `develop` y un resumen de 5 líneas (qué se hizo, PR, decisiones, pendientes, siguiente tarea de tu pista).
+5. Termina con: casilla `[x]` marcada, verificación en verde, rama integrada en `develop` sin PR (`git fetch && git rebase origin/develop && git push origin HEAD:develop`) y un resumen de 5 líneas (qué se hizo, commit, decisiones, pendientes, siguiente tarea de tu pista).

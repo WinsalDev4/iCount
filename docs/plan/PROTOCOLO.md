@@ -36,7 +36,7 @@ X.0 Preparación (A, en solitario)  →  A-X.n ∥ B-X.n (en paralelo)  →  X.9
 3. **¿Dependencia no prevista?** Pista A puede añadirla solo en `backend/`. Pista B **no** instala nada en paralelo: lo anota en su PR y se instala en `X.9`, o se pide al usuario. Si aun así hay conflicto en `package-lock.json`: quedarse con el de `develop` y ejecutar `npm install`.
 4. **ADRs**: las previstas tienen número asignado en el plan. Las no previstas: pista A usa `0100–0199`, pista B `0200–0299`.
 5. **Plan**: cada tarea marca **solo su propia casilla** en `docs/plan/fase-X-*.md` dentro de su PR. Al estar en secciones distintas, git fusiona sin conflicto.
-6. **Ramas**: `feature/<id-en-minúsculas>-<slug>` creada desde `origin/develop`, por ejemplo `feature/a-1.1-backend-base`. PR a `develop`. Antes de abrirlo: `git fetch && git rebase origin/develop`.
+6. **Ramas**: `feature/<id-en-minúsculas>-<slug>` creada desde `origin/develop`, por ejemplo `feature/a-1.1-backend-base`. **Sin PR** (desde el 2026-10-14; donde este documento diga «PR», léase «integración en `develop`»): verificar en local, `git fetch && git rebase origin/develop` y `git push origin HEAD:develop` (solo avance rápido, nunca `--force`). Si el push es rechazado, repetir el rebase. La CI de `develop` es la red de seguridad: si falla, el autor lo arregla antes de seguir.
 7. **Nunca hagas `git checkout develop` en la carpeta `iCount-b`.** Git no permite la misma rama activa en dos carpetas. Solo la carpeta `iCount` (pista A) puede activar `develop` o `main`, y solo para las releases de `X.9`.
 
 ## Modo de preparación global
@@ -64,8 +64,8 @@ Motivo: con una preparación por fase, la pista B se queda parada cada vez que a
 4. Implementa respetando la arquitectura (ADR-0003): dominio puro → datos → presentación. Tests primero en dominio.
 5. Documenta: ADR si la tarea la pide (o si tomas una decisión relevante); página de feature (B) o de backend/arquitectura (A) con la sección "Para la entrevista".
 6. Verifica: `npm run lint && npm run typecheck && npm test` en cada paquete tocado. Todo en verde.
-7. Marca tu casilla `[x]` en el fichero de la fase. Haz commits atómicos (Conventional Commits) y abre el PR a `develop` con la plantilla.
-8. Responde con un resumen breve: qué se hizo, el PR y lo que queda pendiente o bloqueado.
+7. Marca tu casilla `[x]` en el fichero de la fase. Haz commits atómicos (Conventional Commits) y intégralo en `develop` (ver regla 6; no se abre PR).
+8. Responde con un resumen breve: qué se hizo, el commit integrado y lo que queda pendiente o bloqueado.
 
 ## Poner en marcha las dos sesiones (una vez)
 
@@ -87,4 +87,4 @@ git worktree add --detach ../iCount-b origin/develop
 - Lint, typecheck y tests en verde, y CI en verde en el PR.
 - Sin `any`, sin colores ni importes literales en vistas (tokens y `Money`).
 - Documentación actualizada y casilla marcada.
-- El PR describe cómo probarlo.
+- La doc de la feature explica cómo probarla.

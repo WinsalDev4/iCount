@@ -42,4 +42,4 @@ Fase 1 cerrada (release **0.1.0**): monorepo, backend base, contratos, red, desi
 - El usuario viene de Android (Kotlin/KMP) e iOS (SwiftUI): explica con analogías a esos stacks. Idioma: español.
 
 ## Git
-Ramas `feature/<id>-<slug>` desde `develop`; PR a `develop`; releases `release/0.X.0` al cerrar cada fase. Nunca commitear directo a `main` ni a `develop`.
+Ramas `feature/<id>-<slug>` desde `develop`. **Sin PR** (decisión del 2026-10-14: la espera de CI frenaba el trabajo): se verifica en local (`npm run verify`), se hace `git fetch && git rebase origin/develop` y se integra con `git push origin HEAD:develop` (solo avance rápido, sin `--force`). La CI de `develop` es la red de seguridad: si falla, quien la rompió la arregla en seguida. Releases `release/0.X.0` al cerrar cada fase. Nunca commitear directo en `main`.
