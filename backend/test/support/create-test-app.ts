@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 
 import type { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -15,6 +16,9 @@ import { EmailSender } from '../../src/shared/email/email-sender.js';
 import { InMemoryEmailSender } from './in-memory-email-sender.js';
 import { TEST_DATABASE_URL } from './test-database.js';
 
+/** Built-in categories; TRUNCATE … CASCADE on households also empties `categories`. */
+const CATEGORY_SEED = readFileSync('drizzle/0004_seed_categories.sql', 'utf8');
+
 export const TEST_JWT_SECRET = 'e2e-secret-that-is-long-enough-for-hs256!!';
 
 export interface SignedInUser {
@@ -29,7 +33,7 @@ export interface TestApp {
   readonly db: Database;
   /** Every email the app sent (no SMTP in tests). */
   readonly emails: InMemoryEmailSender;
-  /** Empties the given tables between tests. */
+  /** Empties the given tables between tests (and restores the built-in categories). */
   truncate(...tables: string[]): Promise<void>;
   /** Creates a user straight in the database and returns a valid access token for it. */
   signIn(email?: string): Promise<SignedInUser>;
@@ -67,6 +71,7 @@ export async function createTestApp(overrides: ConfigOverrides = {}): Promise<Te
     truncate: async (...tables) => {
       const list = tables.map((t) => `"${t}"`).join(', ');
       await db.execute(sql.raw(`truncate table ${list} cascade`));
+      await db.execute(sql.raw(CATEGORY_SEED));
     },
     signIn: async (email = `user-${randomUUID()}@icount.test`) => {
       const userId = randomUUID();
