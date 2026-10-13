@@ -24,7 +24,7 @@ Marca estados en docs/plan/README.md.
 
 ## Pista A · Opus
 
-### [ ] A-4.1 · Motor financiero (`packages/finance`) — PRIORITARIA (B-4.2 depende de ella)
+### [x] A-4.1 · Motor financiero (`packages/finance`) — PRIORITARIA (B-4.2 depende de ella)
 - **Rama:** `feature/a-4.1-motor-financiero` · **Depende de:** 4.0
 - **Ficheros exclusivos:** `packages/finance/**`, `docs/architecture/motor-financiero.md`
 - **Hecho cuando:** funciones puras sobre céntimos enteros: cuota francesa, cuadro de amortización, saldo pendiente a una fecha, simulación de amortización anticipada mensual (meses ahorrados e intereses ahorrados), estrategias **avalancha** y **bola de nieve** con varias deudas y aportación extra (fecha de fin por deuda e intereses totales); tests contrastados con cuadros conocidos; documentación con las fórmulas.
