@@ -34,7 +34,7 @@ Implementa en el backend los módulos categories y transactions según los contr
 Documenta en docs/backend/movimientos.md (por qué cursor y no offset, para la entrevista).
 ```
 
-### [ ] A-3.2 · App: datos de movimientos, persistencia y optimistas
+### [x] A-3.2 · App: datos de movimientos, persistencia y optimistas
 - **Rama:** `feature/a-3.2-datos-movimientos` · **Depende de:** 3.0
 - **Ficheros exclusivos:** `mobile/src/features/transactions/data/api/**`, `mobile/src/features/categories/data/api/**`, `mobile/src/core/query/**`, `mobile/src/core/storage/**`, `docs/architecture/persistencia.md`
 - **Hecho cuando:** `ApiTransactionRepository` y `ApiCategoryRepository` con mappers de DTO a dominio (`Money`); caché persistida en MMKV; fábrica de *query keys* y helper genérico de mutación optimista (aplicar, revertir e invalidar) listo para los ViewModels de la pista B; tests.
