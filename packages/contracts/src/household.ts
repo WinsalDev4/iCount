@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { emailSchema } from './auth.ts';
-import { categoryIdResponseSchema, categoryIdSchema } from './category.ts';
+import { categoryRefResponseSchema, categoryRefSchema } from './category.ts';
 import { currencyCodeSchema } from './currency.ts';
 import { householdIdSchema, userIdSchema } from './ids.ts';
 import { moneyDtoSchema } from './money.ts';
@@ -29,13 +29,13 @@ const sharesSchema = z
   );
 
 function categorySplitSchema(
-  categoryId: typeof categoryIdSchema | typeof categoryIdResponseSchema,
+  categoryId: typeof categoryRefSchema | typeof categoryRefResponseSchema,
 ) {
   return z.object({ categoryId, shares: sharesSchema });
 }
 
 function customSplitRuleSchema(
-  categoryId: typeof categoryIdSchema | typeof categoryIdResponseSchema,
+  categoryId: typeof categoryRefSchema | typeof categoryRefResponseSchema,
 ) {
   return z.object({
     type: z.literal('custom'),
@@ -57,14 +57,14 @@ const incomeProportionalSplitRuleSchema = z.object({ type: z.literal('income-pro
 export const splitRuleSchema = z.discriminatedUnion('type', [
   equalSplitRuleSchema,
   incomeProportionalSplitRuleSchema,
-  customSplitRuleSchema(categoryIdSchema),
+  customSplitRuleSchema(categoryRefSchema),
 ]);
 
 /** Tolerant reader for responses (unknown categories read as `other`). */
 export const splitRuleResponseSchema = z.discriminatedUnion('type', [
   equalSplitRuleSchema,
   incomeProportionalSplitRuleSchema,
-  customSplitRuleSchema(categoryIdResponseSchema),
+  customSplitRuleSchema(categoryRefResponseSchema),
 ]);
 
 export const memberDtoSchema = z.object({

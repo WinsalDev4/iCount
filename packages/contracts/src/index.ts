@@ -11,3 +11,4 @@ export * from './ids.ts';
 export * from './money.ts';
 export * from './pagination.ts';
 export * from './problemDetails.ts';
+export * from './transaction.ts';
