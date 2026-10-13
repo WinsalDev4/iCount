@@ -4,7 +4,7 @@
 
 ---
 
-## [ ] 4.0 · Preparación — Opus, en solitario
+## [x] 4.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/4.0-preparacion-planificacion` · **Depende de:** fase 3 ✅
 - **Hecho cuando:**
   - ADR-0015 (motor financiero compartido): paquete `packages/finance` en TypeScript puro, usado por la app (simulación offline) y por el backend (fuente de verdad); reglas de redondeo; amortización francesa.

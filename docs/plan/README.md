@@ -11,9 +11,9 @@ Desarrollo completo por fases, en **dos pistas en paralelo**: **A (Opus)** para 
 | 0 · Fundaciones | Entorno, repo, arquitectura, ADRs, diseño elegido | — | ✅ Hecha |
 | [1 · Cimientos](fase-1-cimientos.md) | Monorepo, backend base, contratos, red, design system, navegación | 0.1.0 | ✅ Hecha |
 | [2 · Identidad y hogar](fase-2-identidad-y-hogar.md) | Onboarding, login sin contraseña, crear o unirse a un hogar, reparto | 0.2.0 | 🚧 En curso |
-| [G · Preparación global](fase-g-preparacion-global.md) | Las `X.0` de las fases 3–7 de una vez | — | 🚧 En curso (3.0 ✅) |
+| [G · Preparación global](fase-g-preparacion-global.md) | Las `X.0` de las fases 3–7 de una vez | — | 🚧 En curso (3.0 ✅ · 4.0 ✅) |
 | [3 · Movimientos](fase-3-movimientos.md) | Añadir, Inicio, Historial, persistencia y actualizaciones optimistas | 0.3.0 | 🚧 En curso |
-| [4 · Planificación](fase-4-planificacion.md) | Motor financiero, presupuestos, deudas, pagos recurrentes | 0.4.0 | ⏳ Pendiente |
+| [4 · Planificación](fase-4-planificacion.md) | Motor financiero, presupuestos, deudas, pagos recurrentes | 0.4.0 | 🚧 En curso |
 | [5 · Hogar compartido](fase-5-hogar-compartido.md) | Balances, saldar cuentas, actividad y aprobaciones, push, E2E | 0.5.0 | ⏳ Pendiente |
 | [6 · Lanzamiento](fase-6-lanzamiento.md) | Despliegue, seguridad, pulido, rendimiento, tiendas | 1.0.0 | ⏳ Pendiente |
 | [7 · Asistente IA](fase-7-asistente-ia.md) | Hallazgos de ahorro, planes, chat con Claude | 1.1.0 | ⏳ Pendiente |
