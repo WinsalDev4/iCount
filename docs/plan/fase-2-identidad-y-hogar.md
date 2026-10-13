@@ -46,7 +46,7 @@ Implementa el módulo households: crear hogar (el creador es admin), obtener los
 Autorización por pertenencia en todos los endpoints (tests que lo prueben). Contratos de @icount/contracts. Documenta en docs/backend/hogares.md.
 ```
 
-### [ ] A-2.3 · App: sesión y repositorios de API
+### [x] A-2.3 · App: sesión y repositorios de API
 - **Rama:** `feature/a-2.3-sesion-app` · **Depende de:** 2.0 (contra contratos; no necesita el backend desplegado)
 - **Ficheros exclusivos:** `mobile/src/core/auth/**`, `mobile/src/core/network/**`, `mobile/src/features/auth/data/api/**`, `mobile/src/features/household/data/api/**`, `docs/architecture/sesion.md`
 - **Hecho cuando:** almacén de sesión en `expo-secure-store`; el `httpClient` añade el token y hace refresh *single-flight* (varias peticiones con 401 → un único refresh); cierre de sesión forzado si el refresh falla; servicio de biometría; `ApiAuthRepository` y `ApiHouseholdRepository` implementan los puertos; tests.
