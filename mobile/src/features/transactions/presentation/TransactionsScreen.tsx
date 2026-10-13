@@ -30,7 +30,7 @@ export function TransactionsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
       <Text style={styles.muted}>Balance del mes</Text>
       <Text
         style={[

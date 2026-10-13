@@ -7,12 +7,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurTargetContext } from './blurTarget';
 import { theme } from './theme';
 
+export type Edge = 'top' | 'bottom' | 'left' | 'right';
+
 export type ScreenProps = {
   children: ReactNode;
   /** Apply the safe-area padding (default). Turn off when a navigator already does it. */
   safeArea?: boolean;
+  /** Which safe-area edges to pad while `safeArea` is on. Screens inside tabs leave out 'bottom'. */
+  edges?: readonly Edge[];
   style?: StyleProp<ViewStyle>;
 };
+
+const allEdges: readonly Edge[] = ['top', 'bottom', 'left', 'right'];
 
 /** Midnight Glass backdrop: near-black base plus a violet and a teal radial glow. */
 function Glows() {
@@ -48,7 +54,7 @@ function Glows() {
   );
 }
 
-export function Screen({ children, safeArea = true, style }: ScreenProps) {
+export function Screen({ children, safeArea = true, edges = allEdges, style }: ScreenProps) {
   const insets = useSafeAreaInsets();
   const blurTarget = useRef<View | null>(null);
 
@@ -62,10 +68,10 @@ export function Screen({ children, safeArea = true, style }: ScreenProps) {
           style={[
             styles.content,
             safeArea && {
-              paddingTop: insets.top,
-              paddingBottom: insets.bottom,
-              paddingLeft: insets.left,
-              paddingRight: insets.right,
+              paddingTop: edges.includes('top') ? insets.top : 0,
+              paddingBottom: edges.includes('bottom') ? insets.bottom : 0,
+              paddingLeft: edges.includes('left') ? insets.left : 0,
+              paddingRight: edges.includes('right') ? insets.right : 0,
             },
             style,
           ]}
