@@ -5,6 +5,10 @@ export default defineConfig({
   test: {
     globals: true,
     root: './',
-    include: ['**/*.e2e-spec.ts'],
+    include: ['test/**/*.e2e-spec.ts'],
+    globalSetup: ['./test/support/global-setup.ts'],
+    // Files share one database and truncate tables: run them one after another.
+    fileParallelism: false,
+    hookTimeout: 30_000,
   },
 });

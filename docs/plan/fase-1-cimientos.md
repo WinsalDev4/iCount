@@ -31,7 +31,7 @@ Verifica lint/typecheck/test en todos los paquetes. PR a develop.
 
 ## Pista A · Opus
 
-### [ ] A-1.1 · Backend base
+### [x] A-1.1 · Backend base
 - **Rama:** `feature/a-1.1-backend-base` · **Depende de:** 1.0
 - **Ficheros exclusivos:** `backend/**`, `.github/workflows/backend-ci.yml`, `docs/backend/**`
 - **Hecho cuando:** estructura Clean Architecture en `backend/src/{shared,modules}`; configuración validada con zod al arrancar; filtro global de errores con formato *problem details* (RFC 9457); pipe de validación con zod; `GET /health` comprueba la BD; primera migración; OpenAPI en `/docs`; tests unitarios y e2e (supertest) contra Postgres; workflow de CI del backend con servicio Postgres; `docs/backend/arquitectura.md` con "Para la entrevista".
