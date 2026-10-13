@@ -44,7 +44,7 @@ Deja un módulo de ejemplo mínimo que sirva de plantilla para los siguientes (e
 Solo toca backend/**, .github/workflows/backend-ci.yml y docs/backend/**.
 ```
 
-### [ ] A-1.2 · Contratos compartidos base
+### [x] A-1.2 · Contratos compartidos base
 - **Rama:** `feature/a-1.2-contratos-base` · **Depende de:** 1.0
 - **Ficheros exclusivos:** `packages/contracts/**`, `docs/architecture/contratos.md`
 - **Hecho cuando:** esquemas zod con tipos inferidos para `MoneyDto` (`amountMinor` entero seguro + `currency`), IDs con marca de tipo (*branded*), paginación por cursor, `ProblemDetails`, `CategoryId` y `CurrencyCode`; tests de validación; documentación de cómo versionar contratos.
