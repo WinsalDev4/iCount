@@ -3,6 +3,7 @@
  * consumers never deep-import internal files.
  */
 export * from './activity.ts';
+export * from './advisor.ts';
 export * from './apiVersion.ts';
 export * from './auth.ts';
 export * from './budget.ts';
