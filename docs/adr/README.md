@@ -18,3 +18,4 @@ Cada decisión técnica relevante se documenta aquí con su contexto, alternativ
 | [0012](0012-orm-drizzle.md) | Drizzle ORM para PostgreSQL | Aceptado |
 | [0013](0013-autenticacion-sin-contrasena.md) | Autenticación sin contraseña: enlace mágico, JWT + refresh rotatorio, biometría local | Aceptado |
 | [0014](0014-cache-persistida-y-optimistas.md) | Caché persistida en MMKV y actualizaciones optimistas; offline completo aplazado | Aceptado |
+| [0015](0015-motor-financiero-compartido.md) | Motor financiero compartido en `@icount/finance` (céntimos, TIN, redondeo) | Aceptado |
