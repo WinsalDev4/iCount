@@ -101,7 +101,7 @@ Rutas finas (solo re-exportan pantallas de features/*/presentation). Test del Ta
 
 ---
 
-## [ ] 1.9 · Integración y cierre — Opus, en solitario
+## [x] 1.9 · Integración y cierre — Opus, en solitario
 - **Rama:** `feature/1.9-cierre-cimientos` y después `release/0.1.0`
 - **Depende de:** A-1.1, A-1.2, A-1.3, B-1.1, B-1.2
 - **Hecho cuando:** `QueryClient` del layout usa la factoría de `core/query`; la app compila y abre en el emulador Android con fuentes, cristal y pestañas; backend y Postgres arrancan con docker compose y responden a `/health`; dependencias anotadas por B instaladas; README raíz y `CLAUDE.md` actualizados; fase 1 → ✅ en `docs/plan/README.md`; release `0.1.0` con Git Flow (versión en `app.json` y `package.json`), tag `v0.1.0` y push de `main`, `develop` y tags.
