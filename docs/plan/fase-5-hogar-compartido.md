@@ -4,7 +4,7 @@
 
 ---
 
-## [ ] 5.0 · Preparación — Opus, en solitario
+## [x] 5.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/5.0-preparacion-hogar` · **Depende de:** fase 4 ✅
 - **Hecho cuando:**
   - ADR-0016 (balances y liquidaciones): balance neto por miembro y algoritmo voraz de mínimas transferencias; cómo afectan los movimientos pendientes de aprobar.
