@@ -1,17 +1,10 @@
+import type { CategoryId } from '@/core/domain/Category';
 import type { Money } from '@/core/domain/Money';
 
 export type TransactionType = 'income' | 'expense';
 
-export type CategoryId =
-  | 'food'
-  | 'bills'
-  | 'housing'
-  | 'transport'
-  | 'loans'
-  | 'insurance'
-  | 'leisure'
-  | 'salary'
-  | 'other';
+/** Categories live in core/domain because household split rules use them too. */
+export type { CategoryId };
 
 export interface Transaction {
   readonly id: string;

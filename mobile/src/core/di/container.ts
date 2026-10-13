@@ -1,4 +1,6 @@
 import { env, type DataSource } from '@/core/config/env';
+import { createAuthModule } from '@/features/auth/auth.module';
+import { createHouseholdModule } from '@/features/household/household.module';
 import { createTransactionsModule } from '@/features/transactions/transactions.module';
 
 export interface ContainerConfig {
@@ -11,6 +13,8 @@ export interface ContainerConfig {
  */
 export function createContainer(config: ContainerConfig = { dataSource: env.dataSource }) {
   return {
+    auth: createAuthModule(config),
+    household: createHouseholdModule(config),
     transactions: createTransactionsModule(config),
   };
 }
