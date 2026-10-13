@@ -5,7 +5,7 @@
     "source.fixAll.eslint": "explicit"
   },
   "eslint.workingDirectories": [{ "mode": "auto" }],
-  "typescript.tsdk": "mobile/node_modules/typescript/lib",
+  "typescript.tsdk": "node_modules/typescript/lib",
   "jest.virtualFolders": [{ "name": "mobile", "rootPath": "mobile" }],
   "files.eol": "\n",
   "search.exclude": {

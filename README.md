@@ -9,7 +9,8 @@ iCount registra ingresos y gastos, los clasifica (comida, facturas, vivienda, pr
 | Carpeta | Contenido | Stack |
 |---|---|---|
 | [`mobile/`](mobile/) | App iOS / Android | React Native 0.86 · Expo SDK 57 · Expo Router · TypeScript 6 · TanStack Query · Zustand · Zod |
-| [`backend/`](backend/) | API REST | NestJS · PostgreSQL ([ADR-0004](docs/adr/0004-backend-nestjs-postgresql.md)) |
+| [`backend/`](backend/) | API REST | NestJS 12 · PostgreSQL 17 · Drizzle ORM ([ADR-0004](docs/adr/0004-backend-nestjs-postgresql.md), [ADR-0012](docs/adr/0012-orm-drizzle.md)) |
+| [`packages/contracts/`](packages/contracts/) | Contratos API ↔ app | Esquemas Zod compartidos, TypeScript sin build ([ADR-0011](docs/adr/0011-npm-workspaces-y-paquetes-compartidos.md)) |
 | [`docs/`](docs/) | Decisiones (ADR), plan por fases, features, diseño, aprendizaje | Markdown |
 
 **Diseño:** dirección "Midnight Glass" (oscuro, superficies de cristal, tipografía Sora) — [ADR-0009](docs/adr/0009-direccion-visual-midnight-glass.md).
@@ -36,13 +37,15 @@ Regla de dependencias: `presentation → domain ← data`. Detalle en [ADR-0003]
 
 Entorno (Windows, VS Code): [docs/setup/entorno-windows.md](docs/setup/entorno-windows.md).
 
+Monorepo con **npm workspaces** ([ADR-0011](docs/adr/0011-npm-workspaces-y-paquetes-compartidos.md)): `npm install` siempre en la raíz.
+
 ```bash
-cd mobile
-npm install
-npm start            # Metro
-npm run android      # build de desarrollo en el emulador
-npm test
-npm run lint && npm run typecheck
+npm install                      # app, backend y packages/*
+npm start -w mobile              # Metro
+npm run android -w mobile        # build de desarrollo en el emulador
+npm run db:up                    # PostgreSQL 17 (Docker)
+npm run start:dev -w backend     # API en http://localhost:3000
+npm run verify                   # lint + typecheck + formato + tests de todos los paquetes
 ```
 
 ## Hoja de ruta

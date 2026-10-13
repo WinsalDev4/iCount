@@ -28,7 +28,7 @@ export type TransactionsUiState =
  * Kotlin analogy: a ViewModel exposing StateFlow<UiState>.
  */
 export function useTransactionsViewModel(householdId: string, period: YearMonth) {
-  const { getMonthlySummary } = useDependencies();
+  const { getMonthlySummary } = useDependencies().transactions;
 
   const query = useQuery({
     queryKey: ['monthly-summary', householdId, period.year, period.month],

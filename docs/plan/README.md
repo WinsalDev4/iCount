@@ -9,7 +9,7 @@ Desarrollo completo por fases, en **dos pistas en paralelo**: **A (Opus)** para 
 | Fase | Objetivo | Release | Estado |
 |---|---|---|---|
 | 0 · Fundaciones | Entorno, repo, arquitectura, ADRs, diseño elegido | — | ✅ Hecha |
-| [1 · Cimientos](fase-1-cimientos.md) | Monorepo, backend base, contratos, red, design system, navegación | 0.1.0 | ⏳ Pendiente |
+| [1 · Cimientos](fase-1-cimientos.md) | Monorepo, backend base, contratos, red, design system, navegación | 0.1.0 | 🚧 En curso |
 | [2 · Identidad y hogar](fase-2-identidad-y-hogar.md) | Onboarding, login sin contraseña, crear o unirse a un hogar, reparto | 0.2.0 | ⏳ Pendiente |
 | [3 · Movimientos](fase-3-movimientos.md) | Añadir, Inicio, Historial, persistencia y actualizaciones optimistas | 0.3.0 | ⏳ Pendiente |
 | [4 · Planificación](fase-4-planificacion.md) | Motor financiero, presupuestos, deudas, pagos recurrentes | 0.4.0 | ⏳ Pendiente |

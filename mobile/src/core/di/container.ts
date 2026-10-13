@@ -1,15 +1,17 @@
-import { InMemoryTransactionRepository } from '@/features/transactions/data/InMemoryTransactionRepository';
-import { GetMonthlySummary } from '@/features/transactions/domain/usecases/GetMonthlySummary';
+import { env, type DataSource } from '@/core/config/env';
+import { createTransactionsModule } from '@/features/transactions/transactions.module';
+
+export interface ContainerConfig {
+  readonly dataSource: DataSource;
+}
 
 /**
- * Composition root: the only place that knows concrete implementations.
- * Equivalent to a Hilt/Koin module on Android. See docs/adr/0003-arquitectura-clean-mvvm.md
+ * Composition root: composes one module per feature, each namespaced by feature name.
+ * Equivalent to the list of Hilt/Koin modules on Android. See docs/adr/0003-arquitectura-clean-mvvm.md
  */
-export function createContainer() {
-  const transactionRepository = new InMemoryTransactionRepository();
-
+export function createContainer(config: ContainerConfig = { dataSource: env.dataSource }) {
   return {
-    getMonthlySummary: new GetMonthlySummary(transactionRepository, 'EUR'),
+    transactions: createTransactionsModule(config),
   };
 }
 
