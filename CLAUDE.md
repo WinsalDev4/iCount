@@ -18,6 +18,9 @@ Antes de tocar APIs de Expo, lee `mobile/AGENTS.md`: consulta la doc versionada,
 | Monorepo | npm workspaces; `packages/*` sin build (TS borrable, imports `.ts`) | 0011 |
 | ORM | Drizzle + `pg` + drizzle-kit | 0012 |
 
+## Estado
+Fase 1 cerrada (release **0.1.0**): monorepo, backend base, contratos, red, design system y navegación. Siguiente: fase 2 (`/tarea 2.0`).
+
 ## Plan de desarrollo
 - Plan completo por fases: `docs/plan/README.md` (estado) y `docs/plan/fase-*.md` (tareas con prompt).
 - **Dos pistas en paralelo:** A = Opus (carpeta `iCount`), B = Sonnet (worktree `iCount-b`). Las reglas para no pisarse están en `docs/plan/PROTOCOLO.md`; respétalas siempre.

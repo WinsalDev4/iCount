@@ -4,6 +4,13 @@
 
 iCount registra ingresos y gastos, los clasifica (comida, facturas, vivienda, préstamos, letras del coche, seguros…), reparte los gastos comunes entre los miembros del hogar, planifica presupuestos, deudas y pagos recurrentes, y en una fase posterior usará IA para proponer planes de ahorro y de amortización de deuda.
 
+## Estado: v0.1.0 · Cimientos
+
+- **App:** abre con la barra de pestañas de cristal (Inicio, Historial, +, Planificar, Hogar), tipografía Sora y el design system Midnight Glass ([design system](docs/features/design-system.md), [navegación](docs/features/navegacion.md)). Inicio muestra el resumen mensual con datos en memoria.
+- **API:** NestJS con configuración validada, errores RFC 9457, OpenAPI en `/docs` y `GET /health` contra PostgreSQL ([arquitectura del backend](docs/backend/arquitectura.md)).
+- **Compartido:** contratos zod entre app y API ([contratos](docs/architecture/contratos.md)) y capa de red tipada en la app ([red](docs/architecture/red.md)).
+- **Siguiente:** fase 2 · Identidad y hogar.
+
 ## Stack
 
 | Carpeta | Contenido | Stack |
@@ -22,7 +29,7 @@ Clean Architecture + MVVM, organizada **por feature**:
 ```
 mobile/src/
 ├── app/                     # Rutas (Expo Router). Solo mapean URL → pantalla
-├── core/                    # Transversal: DI, red, sesión, configuración, dominio común (Money)
+├── core/                    # Transversal: DI, config (env), red (httpClient), query (QueryClient), dominio común (Money, Result)
 ├── shared/ui/               # Design system Midnight Glass
 └── features/<feature>/
     ├── domain/              # Entidades, puertos (interfaces), casos de uso. TS puro
@@ -54,7 +61,7 @@ Desarrollo por fases con dos pistas en paralelo (Opus para arquitectura y backen
 
 | Fase | Release |
 |---|---|
-| 1 · Cimientos | 0.1.0 |
+| 1 · Cimientos | 0.1.0 ✅ |
 | 2 · Identidad y hogar | 0.2.0 |
 | 3 · Movimientos | 0.3.0 |
 | 4 · Planificación | 0.4.0 |
