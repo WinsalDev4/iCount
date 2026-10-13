@@ -34,6 +34,14 @@ export const theme = {
     small: { fontSize: 13, letterSpacing: 0, fontWeight: '400' },
     label: { fontSize: 12, letterSpacing: 0, fontWeight: '700' },
   },
+  /** Sora faces loaded in app/_layout.tsx. One family per weight: Android ignores fontWeight on custom fonts. */
+  fonts: {
+    regular: 'Sora_400Regular',
+    semibold: 'Sora_600SemiBold',
+    bold: 'Sora_700Bold',
+  },
+  /** Minimum touch target (pt) for anything pressable. */
+  minTouch: 44,
   spacing: (n: number) => n * 4,
   radius: { sm: 14, md: 18, lg: 22, pill: 999 },
   /** Intensity for expo-blur BlurView on glass surfaces. */
