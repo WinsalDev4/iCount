@@ -54,6 +54,15 @@
           "color": "#8C7BFF",
           "defaultChannel": "default"
         }
+      ],
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": ["es", "en"],
+            "android": ["es", "en"]
+          }
+        }
       ]
     ],
     "scheme": "icount",
