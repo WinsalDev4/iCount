@@ -4,7 +4,7 @@
 
 ---
 
-## [ ] 3.0 · Preparación — Opus, en solitario
+## [x] 3.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/3.0-preparacion-movimientos` · **Depende de:** fase 2 ✅
 - **Hecho cuando:**
   - ADR-0014 (persistencia y offline): caché de TanStack Query persistida en MMKV, mutaciones optimistas con reversión, y sincronización offline completa aplazada (motivo explicado).
