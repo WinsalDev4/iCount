@@ -35,7 +35,7 @@ Implementa el módulo auth del backend según ADR-0013 y los contratos de @icoun
 Tests e2e de los flujos felices y de abuso. Documenta en docs/backend/auth.md (amenazas cubiertas, para la entrevista).
 ```
 
-### [ ] A-2.2 · Backend: hogares
+### [x] A-2.2 · Backend: hogares
 - **Rama:** `feature/a-2.2-backend-hogares` · **Depende de:** A-2.1
 - **Ficheros exclusivos:** `backend/**`, `docs/backend/hogares.md`
 - **Hecho cuando:** hogares, miembros (rol administrador o miembro), invitaciones (código de 8 caracteres, 48 h, un solo uso), regla de reparto e ingresos por miembro; autorización (solo los miembros acceden a su hogar); endpoints y tests.
