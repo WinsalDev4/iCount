@@ -1,6 +1,7 @@
 import type { CategoryId } from '@/core/domain/Category';
 import type { UserId } from '@/core/domain/Ids';
 import type { Money } from '@/core/domain/Money';
+import type { YearMonth } from '@/core/domain/YearMonth';
 
 export type TransactionType = 'income' | 'expense';
 
@@ -70,8 +71,5 @@ export interface DailyTotal {
   readonly expenses: Money;
 }
 
-/** Year + 1-based month, e.g. { year: 2026, month: 10 }. */
-export interface YearMonth {
-  readonly year: number;
-  readonly month: number;
-}
+/** Lives in core/domain: budgets and summaries use it too. */
+export type { YearMonth };

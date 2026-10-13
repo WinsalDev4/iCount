@@ -5,7 +5,15 @@ describe('createContainer', () => {
     const container = createContainer({ dataSource: 'memory' });
 
     expect(Object.keys(container)).toEqual(
-      expect.arrayContaining(['auth', 'categories', 'household', 'transactions']),
+      expect.arrayContaining([
+        'auth',
+        'budgets',
+        'categories',
+        'debts',
+        'household',
+        'recurring',
+        'transactions',
+      ]),
     );
   });
 });
