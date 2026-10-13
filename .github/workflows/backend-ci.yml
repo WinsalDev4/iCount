@@ -1,0 +1,53 @@
+name: backend-ci
+
+# The backend imports @icount/contracts, so contract changes re-run it too.
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/backend-ci.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/backend-ci.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: icount
+          POSTGRES_PASSWORD: icount
+          POSTGRES_DB: icount_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U icount -d icount_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://icount:icount@localhost:5432/icount_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w @icount/backend
+      - run: npm run typecheck -w @icount/backend
+      - run: npm run format:check -w @icount/backend
+      - run: npm test -w @icount/backend
+      # e2e: applies the Drizzle migrations to icount_test, then exercises the HTTP API
+      - run: npm run test:e2e -w @icount/backend
+      - run: npm run build -w @icount/backend

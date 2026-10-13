@@ -1,0 +1,35 @@
+name: mobile-ci
+
+# npm workspaces (ADR-0011): one lockfile at the root, so dependencies are installed from there.
+# The app also depends on packages/* (e.g. @icount/contracts), so changes there re-run this check.
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'mobile/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/mobile-ci.yml'
+  pull_request:
+    paths:
+      - 'mobile/**'
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/mobile-ci.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w @icount/mobile
+      - run: npm run typecheck -w @icount/mobile
+      - run: npm run format:check -w @icount/mobile
+      - run: npm test -w @icount/mobile -- --ci
