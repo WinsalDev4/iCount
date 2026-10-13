@@ -1,0 +1,28 @@
+{
+  "name": "icount",
+  "version": "0.1.0",
+  "private": true,
+  "description": "iCount: finanzas personales y economías compartidas (monorepo)",
+  "workspaces": [
+    "mobile",
+    "backend",
+    "packages/*"
+  ],
+  "overrides": {
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11"
+  },
+  "scripts": {
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "format:check": "npm run format:check --workspaces --if-present",
+    "verify": "npm run lint && npm run typecheck && npm run format:check && npm test",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down"
+  }
+}
