@@ -1,11 +1,24 @@
+import type { UserId } from '@/core/domain/Ids';
 import { Money } from '@/core/domain/Money';
+import type { Page } from '@/core/domain/Page';
 
-import type { CategoryId, Transaction, TransactionType, YearMonth } from '../domain/Transaction';
+import type { MonthlySummary } from '../domain/MonthlySummary';
+import type {
+  CategoryId,
+  DailyTotal,
+  Transaction,
+  TransactionType,
+  YearMonth,
+} from '../domain/Transaction';
 import type { TransactionRepository } from '../domain/TransactionRepository';
+
+/** The signed-in member in memory mode (until auth exists). */
+export const IN_MEMORY_USER_ID = 'me' as UserId;
 
 /**
  * Temporary data source until the backend exists. Swapping it for an
  * `ApiTransactionRepository` only touches the composition root (core/di).
+ * Methods added in task 3.0 are filled in by the phase 3 tasks (B-3.x).
  */
 export class InMemoryTransactionRepository implements TransactionRepository {
   constructor(private readonly transactions: Transaction[] = seed()) {}
@@ -18,6 +31,40 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         tx.occurredAt.getMonth() + 1 === month,
     );
   }
+
+  list(): Promise<Page<Transaction>> {
+    return notYet('list');
+  }
+
+  getById(): Promise<Transaction | null> {
+    return notYet('getById');
+  }
+
+  create(): Promise<Transaction> {
+    return notYet('create');
+  }
+
+  update(): Promise<Transaction> {
+    return notYet('update');
+  }
+
+  delete(): Promise<void> {
+    return notYet('delete');
+  }
+
+  monthlySummary(): Promise<MonthlySummary> {
+    return notYet('monthlySummary');
+  }
+
+  dailyTotals(): Promise<readonly DailyTotal[]> {
+    return notYet('dailyTotals');
+  }
+}
+
+function notYet<T>(method: string): Promise<T> {
+  return Promise.reject(
+    new Error(`InMemoryTransactionRepository.${method}() is not implemented yet`),
+  );
 }
 
 function seed(): Transaction[] {
@@ -37,6 +84,9 @@ function seed(): Transaction[] {
     description,
     occurredAt: new Date(now.getFullYear(), now.getMonth(), day),
     householdId: 'home',
+    payerId: IN_MEMORY_USER_ID,
+    shared: false,
+    shares: [],
   });
 
   return [

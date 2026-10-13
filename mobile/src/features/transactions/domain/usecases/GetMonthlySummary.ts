@@ -1,18 +1,14 @@
 import { Money, type CurrencyCode } from '@/core/domain/Money';
 
+import type { MonthlySummary } from '../MonthlySummary';
 import type { CategoryId, YearMonth } from '../Transaction';
 import type { TransactionRepository } from '../TransactionRepository';
 
-export interface MonthlySummary {
-  readonly income: Money;
-  readonly expenses: Money;
-  readonly balance: Money;
-  readonly expensesByCategory: ReadonlyMap<CategoryId, Money>;
-}
+export type { MonthlySummary };
 
 export class GetMonthlySummary {
   constructor(
-    private readonly repository: TransactionRepository,
+    private readonly repository: Pick<TransactionRepository, 'findByMonth'>,
     private readonly currency: CurrencyCode,
   ) {}
 

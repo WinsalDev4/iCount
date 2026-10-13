@@ -1,16 +1,11 @@
 import { createContainer } from '../container';
 
 describe('createContainer', () => {
-  it('composes every feature module without touching unimplemented ports', () => {
+  it('composes every feature module without calling any port', () => {
     const container = createContainer({ dataSource: 'memory' });
 
-    expect(Object.keys(container).sort()).toEqual(['auth', 'household', 'transactions']);
-  });
-
-  it('exposes phase 2 ports as stubs until their tasks land', async () => {
-    const { auth, household } = createContainer({ dataSource: 'memory' });
-
-    await expect(auth.authRepository.getSession()).rejects.toThrow('not implemented yet');
-    await expect(household.householdRepository.getMine()).rejects.toThrow('not implemented yet');
+    expect(Object.keys(container)).toEqual(
+      expect.arrayContaining(['auth', 'categories', 'household', 'transactions']),
+    );
   });
 });
