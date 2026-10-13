@@ -17,6 +17,9 @@ export function zodToOpenApi(schema: z.ZodType, io: 'input' | 'output' = 'output
 
 const PROBLEM_DESCRIPTIONS: Record<number, string> = {
   400: 'Invalid request (see `errors`)',
+  401: 'Missing, invalid or expired credentials',
+  403: 'Not allowed for this user',
+  429: 'Too many requests, try again later',
   404: 'Resource not found',
   409: 'Conflict with the current state',
   422: 'Business rule violated',
@@ -43,6 +46,7 @@ export function setupOpenApi(app: INestApplication): void {
     .setTitle('iCount API')
     .setDescription('Finanzas personales y economías compartidas. Errores en RFC 9457.')
     .setVersion(String(API_VERSION))
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

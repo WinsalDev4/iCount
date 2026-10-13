@@ -19,6 +19,8 @@ const STATUS_BY_KIND: Record<DomainErrorKind, number> = {
   not_found: HttpStatus.NOT_FOUND,
   conflict: HttpStatus.CONFLICT,
   forbidden: HttpStatus.FORBIDDEN,
+  unauthenticated: HttpStatus.UNAUTHORIZED,
+  rate_limited: HttpStatus.TOO_MANY_REQUESTS,
 };
 
 type ProblemBody = Omit<ProblemDetails, 'instance' | 'traceId'>;
