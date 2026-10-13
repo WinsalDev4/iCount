@@ -35,12 +35,13 @@ X.0 Preparación (A, en solitario)  →  A-X.n ∥ B-X.n (en paralelo)  →  X.9
 3. **¿Dependencia no prevista?** Pista A puede añadirla solo en `backend/`. Pista B **no** instala nada en paralelo: lo anota en su PR y se instala en `X.9`, o se pide al usuario. Si aun así hay conflicto en `package-lock.json`: quedarse con el de `develop` y ejecutar `npm install`.
 4. **ADRs**: las previstas tienen número asignado en el plan. Las no previstas: pista A usa `0100–0199`, pista B `0200–0299`.
 5. **Plan**: cada tarea marca **solo su propia casilla** en `docs/plan/fase-X-*.md` dentro de su PR. Al estar en secciones distintas, git fusiona sin conflicto.
-6. **Ramas**: `feature/<id-en-minúsculas>-<slug>` desde `develop` actualizado, por ejemplo `feature/a-1.1-backend-base`. PR a `develop`. Rebase sobre `develop` antes de abrir el PR.
+6. **Ramas**: `feature/<id-en-minúsculas>-<slug>` creada desde `origin/develop`, por ejemplo `feature/a-1.1-backend-base`. PR a `develop`. Antes de abrirlo: `git fetch && git rebase origin/develop`.
+7. **Nunca hagas `git checkout develop` en la carpeta `iCount-b`.** Git no permite la misma rama activa en dos carpetas. Solo la carpeta `iCount` (pista A) puede activar `develop` o `main`, y solo para las releases de `X.9`.
 
 ## Pasos de cualquier tarea (lo que hace `/tarea <ID>`)
 
-1. `git checkout develop && git pull`. Comprueba que las dependencias de la tarea están `[x]`. Si no, **para y avisa**.
-2. `git flow feature start <id>-<slug>`.
+1. `git fetch origin`. Comprueba en `origin/develop` que las dependencias de la tarea están `[x]` (`git show origin/develop:docs/plan/fase-X-….md`). Si no, **para y avisa**.
+2. `git switch -c feature/<id>-<slug> origin/develop`. Si hay cambios sin commitear de otra tarea, para y avisa.
 3. Lee **solo**: `CLAUDE.md`, este protocolo, la sección de la tarea y los ficheros que cite. No explores el repo entero.
 4. Implementa respetando la arquitectura (ADR-0003): dominio puro → datos → presentación. Tests primero en dominio.
 5. Documenta: ADR si la tarea la pide (o si tomas una decisión relevante); página de feature (B) o de backend/arquitectura (A) con la sección "Para la entrevista".
@@ -52,11 +53,15 @@ X.0 Preparación (A, en solitario)  →  A-X.n ∥ B-X.n (en paralelo)  →  X.9
 
 ```bash
 cd E:/Documentos/GIT/iCount
-git worktree add ../iCount-b develop
+git fetch origin
+git worktree add --detach ../iCount-b origin/develop
 ```
 
+(`--detach` evita activar `develop` en la segunda carpeta: cada tarea crea su rama desde `origin/develop`.)
+
 - Sesión **Opus** → carpeta `iCount`. Sesión **Sonnet** → carpeta `iCount-b`.
-- Cada carpeta tiene su propio `node_modules`: tras cada `X.0` fusionado, en **las dos**, `git pull` y `npm install`.
+- Cada carpeta tiene su propio `node_modules`: tras cada `X.0` fusionado, en **las dos**, `npm install` al empezar la siguiente tarea (la rama nueva ya sale de `origin/develop` actualizado).
+- El modelo se elige en el selector de modelo de cada sesión: Opus en la de `iCount` y Sonnet en la de `iCount-b`.
 - Pista B arranca Metro con `npx expo start --port 8082`.
 - Prompt de inicio de sesión: `/tarea <ID>` (o `/estado` para ver qué toca).
 

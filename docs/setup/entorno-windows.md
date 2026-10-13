@@ -62,7 +62,8 @@ Ver [docs/plan/PROTOCOLO.md](../plan/PROTOCOLO.md). Resumen:
 
 ```bash
 cd E:/Documentos/GIT/iCount
-git worktree add ../iCount-b develop
+git fetch origin
+git worktree add --detach ../iCount-b origin/develop
 ```
 
 - Abre `iCount` (pista A, Opus) e `iCount-b` (pista B, Sonnet) como dos sesiones o ventanas de VS Code distintas.
