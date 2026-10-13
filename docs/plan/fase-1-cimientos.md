@@ -4,7 +4,7 @@
 
 ---
 
-## [ ] 1.0 · Preparación de la fase — Opus, en solitario
+## [x] 1.0 · Preparación de la fase — Opus, en solitario
 - **Rama:** `feature/1.0-preparacion-cimientos` · **Depende de:** fase 0
 - **Ficheros:** todos los calientes (`package.json` raíz, lockfile, `mobile/package.json`, `mobile/app.json`, `mobile/metro.config.js`, `.github/workflows/mobile-ci.yml`, `core/di/container.ts`, `docs/plan/README.md`), `backend/` (andamiaje), `packages/contracts/` (esqueleto), ADR-0011 y ADR-0012.
 - **Hecho cuando:**

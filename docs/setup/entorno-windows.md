@@ -12,6 +12,7 @@ Estado del equipo configurado el 2026-10-13.
 | Android SDK | API 36, build-tools 36 | `%LOCALAPPDATA%\Android\Sdk` |
 | Android cmdline-tools | latest | `sdkmanager`, `avdmanager` |
 | Emuladores | Pixel 8a, Pixel 10 Pro XL | Pruebas |
+| Docker Desktop | **pendiente de instalar** | PostgreSQL 17 local para el backend (`npm run db:up`) |
 
 ## Variables de entorno (usuario)
 
@@ -32,16 +33,19 @@ Tras cambiarlas, **cierra y vuelve a abrir** terminales y el IDE para que las le
 java -version          # 17.x
 adb --version
 emulator -list-avds
-cd mobile && npx expo-doctor
+npx expo-doctor mobile
+docker --version       # para el backend
 ```
 
 ## Ejecutar la app
 
 ```bash
-cd mobile
-npm start              # Metro bundler
-npm run android        # compila un development build y lo instala en el emulador
+npm install                 # siempre en la raíz (npm workspaces)
+npm start -w mobile         # Metro bundler
+npm run android -w mobile   # compila un development build y lo instala en el emulador
 ```
+
+Para añadir librerías a la app: `cd mobile && npx expo install <paquete>` (Expo detecta el workspace).
 
 La primera compilación de Android tarda varios minutos (Gradle descarga NDK, CMake y dependencias).
 
@@ -67,7 +71,7 @@ git worktree add --detach ../iCount-b origin/develop
 ```
 
 - Abre `iCount` (pista A, Opus) e `iCount-b` (pista B, Sonnet) como dos sesiones o ventanas de VS Code distintas.
-- Cada carpeta necesita su `npm install`. La pista B arranca Metro con `npx expo start --port 8082`.
+- Cada carpeta necesita su `npm install` (en la raíz de la carpeta). La pista B arranca Metro con `npx expo start --port 8082`.
 
 ## Builds en la nube (EAS)
 ```bash
@@ -76,4 +80,3 @@ npx eas-cli@latest init          # solo la primera vez
 npm run build:android:dev -w mobile
 npm run build:ios:dev -w mobile  # requiere Apple Developer Program para instalar en iPhone
 ```
-(Antes de la tarea 1.0, que introduce los workspaces, ejecuta los scripts desde `mobile/` sin `-w mobile`.)

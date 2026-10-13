@@ -1,6 +1,6 @@
 # ADR-0001: Monorepo con `mobile/`, `backend/` y `docs/`
 
-- **Estado:** Aceptado
+- **Estado:** Sustituido por [ADR-0011](0011-npm-workspaces-y-paquetes-compartidos.md) (npm workspaces)
 - **Fecha:** 2026-10-13
 
 ## Contexto
