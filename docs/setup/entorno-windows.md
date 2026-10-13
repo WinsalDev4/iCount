@@ -16,12 +16,15 @@ Estado del equipo configurado el 2026-10-13.
 ## Variables de entorno (usuario)
 
 ```
-JAVA_HOME     = C:\Program Files\Microsoft\jdk-17.x.x-hotspot
+JAVA_HOME     = C:\Program Files\Microsoft\jdk-17.0.20.101-hotspot   (la fija el instalador, a nivel de sistema)
 ANDROID_HOME  = %LOCALAPPDATA%\Android\Sdk
 PATH         += %ANDROID_HOME%\platform-tools;%ANDROID_HOME%\emulator;%ANDROID_HOME%\cmdline-tools\latest\bin
 ```
 
 Tras cambiarlas, **cierra y vuelve a abrir** terminales y el IDE para que las lean.
+
+> Hay un Java 8 de Oracle instalado (`java8path`) que no se ha tocado; el JDK 17 está antes en el `PATH` del sistema, así que es el que se usa.
+> El JDK se instaló con `winget install Microsoft.OpenJDK.17` y las cmdline-tools se descargaron de `dl.google.com` a `%ANDROID_HOME%\cmdline-tools\latest`.
 
 ## Comprobación
 
