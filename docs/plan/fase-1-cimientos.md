@@ -56,7 +56,7 @@ Tests de casos válidos e inválidos. Explica en docs/architecture/contratos.md 
 Solo toca packages/contracts/** y docs/architecture/contratos.md.
 ```
 
-### [ ] A-1.3 · Capa de red de la app
+### [x] A-1.3 · Capa de red de la app
 - **Rama:** `feature/a-1.3-red-app` · **Depende de:** 1.0, A-1.2
 - **Ficheros exclusivos:** `mobile/src/core/network/**`, `mobile/src/core/config/**`, `mobile/src/core/query/**`, `mobile/src/core/domain/Result.ts`, `docs/architecture/red.md`
 - **Hecho cuando:** `httpClient` sobre `fetch` con URL base de `env`, timeout con `AbortController`, parseo de la respuesta con un esquema zod, errores tipados (red, timeout, HTTP con `ProblemDetails`, validación) y tipo `Result`; `queryClient` con política de reintentos (no reintentar 4xx) y `staleTime`; tests con `fetch` simulado.
