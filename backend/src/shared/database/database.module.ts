@@ -2,7 +2,9 @@ import { Global, Inject, Module, type OnApplicationShutdown } from '@nestjs/comm
 import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 
+import { TransactionRunner } from '../application/transaction-runner.js';
 import { APP_CONFIG, type AppConfig } from '../config/app-config.js';
+import { DatabaseContext } from './database-context.js';
 import { DATABASE, PG_POOL } from './database.tokens.js';
 
 /**
@@ -27,8 +29,10 @@ import { DATABASE, PG_POOL } from './database.tokens.js';
       inject: [PG_POOL],
       useFactory: (pool: pg.Pool) => drizzle({ client: pool }),
     },
+    DatabaseContext,
+    { provide: TransactionRunner, useExisting: DatabaseContext },
   ],
-  exports: [DATABASE],
+  exports: [DATABASE, DatabaseContext, TransactionRunner],
 })
 export class DatabaseModule implements OnApplicationShutdown {
   constructor(@Inject(PG_POOL) private readonly pool: pg.Pool) {}
