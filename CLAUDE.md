@@ -17,9 +17,10 @@ Antes de tocar APIs de Expo, lee `mobile/AGENTS.md`: consulta la doc versionada,
 | Flujo Git | Git Flow + Conventional Commits | 0005 |
 | Monorepo | npm workspaces; `packages/*` sin build (TS borrable, imports `.ts`) | 0011 |
 | ORM | Drizzle + `pg` + drizzle-kit | 0012 |
+| Auth | Enlace mágico + JWT 15 min + refresh rotatorio; biometría solo local | 0013 |
 
 ## Estado
-Fase 1 cerrada (release **0.1.0**): monorepo, backend base, contratos, red, design system y navegación. Siguiente: fase 2 (`/tarea 2.0`).
+Fase 1 cerrada (release **0.1.0**): monorepo, backend base, contratos, red, design system y navegación. Fase 2 en curso: 2.0 hecha (ADR-0013, contratos y puertos de auth/household); siguen A-2.x y B-2.x en paralelo.
 
 ## Plan de desarrollo
 - Plan completo por fases: `docs/plan/README.md` (estado) y `docs/plan/fase-*.md` (tareas con prompt).

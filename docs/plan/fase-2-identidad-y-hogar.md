@@ -4,7 +4,7 @@
 
 ---
 
-## [ ] 2.0 · Preparación — Opus, en solitario
+## [x] 2.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/2.0-preparacion-identidad` · **Depende de:** fase 1 ✅
 - **Hecho cuando:**
   - ADR-0013 (autenticación): enlace mágico por email, JWT de acceso de 15 min, refresh token rotatorio guardado con hash y detección de reutilización, y biometría solo como desbloqueo local.
