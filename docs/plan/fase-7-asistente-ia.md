@@ -6,7 +6,7 @@
 
 ---
 
-## [ ] 7.0 · Preparación — Opus, en solitario
+## [x] 7.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/7.0-preparacion-ia` · **Depende de:** fase 6 ✅
 - **Hecho cuando:**
   - ADR-0020 (IA):
