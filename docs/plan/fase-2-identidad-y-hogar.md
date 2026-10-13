@@ -62,7 +62,7 @@ Documenta en docs/architecture/sesion.md (analogía con OkHttp Authenticator).
 
 ## Pista B · Sonnet
 
-### [ ] B-2.1 · Onboarding (01-B)
+### [x] B-2.1 · Onboarding (01-B)
 - **Rama:** `feature/b-2.1-onboarding` · **Depende de:** 2.0
 - **Ficheros exclusivos:** `mobile/src/features/onboarding/**`, `mobile/src/app/(onboarding)/**`, `docs/features/onboarding.md`
 - **Hecho cuando:** 3 pasos con paginador animado (Reanimated), con la maquetación B "cifra protagonista"; "Saltar" y "Siguiente"; flag `onboardingCompleted` persistido (Zustand + AsyncStorage); tests del ViewModel.
