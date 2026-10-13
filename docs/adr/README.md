@@ -21,3 +21,4 @@ Cada decisión técnica relevante se documenta aquí con su contexto, alternativ
 | [0015](0015-motor-financiero-compartido.md) | Motor financiero compartido en `@icount/finance` (céntimos, TIN, redondeo) | Aceptado |
 | [0016](0016-balances-y-liquidaciones.md) | Balances netos, mínimas transferencias (voraz) y aprobación de gastos compartidos | Aceptado |
 | [0017](0017-notificaciones-push.md) | Notificaciones push con Expo Push Service | Aceptado |
+| [0020](0020-asesor-ia.md) | Asesor con Claude solo en backend; números deterministas, privacidad y costes | Aceptado |
