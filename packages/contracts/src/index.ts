@@ -3,8 +3,10 @@
  * consumers never deep-import internal files.
  */
 export * from './apiVersion.ts';
+export * from './auth.ts';
 export * from './category.ts';
 export * from './currency.ts';
+export * from './household.ts';
 export * from './ids.ts';
 export * from './money.ts';
 export * from './pagination.ts';
