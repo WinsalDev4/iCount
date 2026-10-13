@@ -16,3 +16,4 @@ Cada decisión técnica relevante se documenta aquí con su contexto, alternativ
 | [0010](0010-herramientas-y-builds.md) | VS Code + EAS Build (iOS desde Windows) | Aceptado |
 | [0011](0011-npm-workspaces-y-paquetes-compartidos.md) | npm workspaces y paquetes compartidos sin paso de build | Aceptado |
 | [0012](0012-orm-drizzle.md) | Drizzle ORM para PostgreSQL | Aceptado |
+| [0013](0013-autenticacion-sin-contrasena.md) | Autenticación sin contraseña: enlace mágico, JWT + refresh rotatorio, biometría local | Aceptado |
