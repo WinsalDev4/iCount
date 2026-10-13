@@ -1,4 +1,8 @@
+import { existsSync } from 'node:fs';
+
 import { defineConfig } from 'drizzle-kit';
+
+if (existsSync('.env')) process.loadEnvFile('.env');
 
 /**
  * drizzle-kit: generates SQL migrations from the TypeScript schema (ADR-0012).
