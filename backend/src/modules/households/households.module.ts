@@ -15,6 +15,7 @@ import {
   SetMyIncome,
   SetSplitRule,
 } from './application/households.use-cases.js';
+import { HouseholdAccess } from './application/household-access.js';
 import { HouseholdRepository } from './domain/household.js';
 import { InvitationRepository } from './domain/invitation.js';
 import {
@@ -32,6 +33,11 @@ import { HouseholdsController } from './interface/http/households.controller.js'
     { provide: HouseholdRepository, useClass: DrizzleHouseholdRepository },
     { provide: InvitationRepository, useClass: DrizzleInvitationRepository },
     { provide: InviteCodeGenerator, useClass: RandomInviteCodes },
+    {
+      provide: HouseholdAccess,
+      inject: [HouseholdRepository],
+      useFactory: (households: HouseholdRepository) => new HouseholdAccess(households),
+    },
     {
       provide: CreateHousehold,
       inject: [HouseholdRepository, UserRepository, Clock, IdGenerator],
@@ -71,6 +77,6 @@ import { HouseholdsController } from './interface/http/households.controller.js'
       useFactory: (households: HouseholdRepository) => new SetMyIncome(households),
     },
   ],
-  exports: [HouseholdRepository],
+  exports: [HouseholdRepository, HouseholdAccess],
 })
 export class HouseholdsModule {}
