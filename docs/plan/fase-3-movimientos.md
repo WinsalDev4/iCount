@@ -23,7 +23,7 @@ Marca estados en docs/plan/README.md.
 
 ## Pista A · Opus
 
-### [ ] A-3.1 · Backend: movimientos y categorías
+### [x] A-3.1 · Backend: movimientos y categorías
 - **Rama:** `feature/a-3.1-backend-movimientos` · **Depende de:** 3.0
 - **Ficheros exclusivos:** `backend/**`, `docs/backend/movimientos.md`
 - **Hecho cuando:** categorías por defecto (seed en español) y personalizadas por hogar; CRUD de movimientos con ámbito de hogar; reparto por miembro guardado aplicando la `SplitRule`; listado con cursor y filtros (tipo, categoría, miembro, compartido, fechas, texto); `GET` de resumen mensual y de totales diarios; índices adecuados; importes como `BIGINT` en céntimos; tests.

@@ -9,6 +9,7 @@ Funciones **puras** sobre **céntimos enteros**, compartidas por la app (simulac
 | `outstandingBalance(input, fecha)` | Lo que se debe en una fecha |
 | `simulateExtraPayment(input, extra)` | "¿Y si pago X € más al mes?" (meses e intereses ahorrados) |
 | `payoffPlan(deudas, estrategia, extra, fecha)` | Avalancha o bola de nieve para N deudas |
+| `splitAmount({ importe, pagador, miembros, regla, categoría })` | Reparto de un gasto compartido según la `SplitRule` del hogar |
 | `addMonths`, `parseLocalDate`… | Aritmética de calendario sin zona horaria |
 
 ## Convenciones
@@ -57,6 +58,15 @@ Presupuesto mensual constante = **Σ cuotas mínimas + extra**. Cada mes:
 | **Bola de nieve** | Saldo más pequeño primero (empate: tipo más alto y luego id) | Elimina deudas antes y motiva a seguir |
 
 Los desempates por id hacen el resultado **determinista**: la app y el servidor dan siempre el mismo orden. Los tests comprueban que la avalancha nunca paga más intereses que la bola de nieve, y que con una sola deuda `payoffPlan` coincide al céntimo con `simulateExtraPayment`.
+
+## Reparto de gastos compartidos (`splitAmount`)
+
+Cada miembro recibe `⌊importe × peso / Σ pesos⌋` y **los céntimos que sobran van al pagador**, así que las partes suman exactamente el importe. El peso depende de la regla:
+- `equal`: 1 para todos.
+- `income-proportional`: el ingreso declarado. Si alguien no lo ha declarado, o el total es 0, se reparte a partes iguales en vez de cargarlo todo a uno.
+- `custom`: los puntos básicos de esa categoría. Quien no aparece en la lista paga 0, y las categorías sin reparto propio van a partes iguales.
+
+Se calcula con `BigInt`: `importe × ingreso` puede superar 2⁵³ aunque cada número por separado quepa. Lo usan el backend al guardar cada movimiento compartido y la app para la vista previa del reparto.
 
 ## Casos de referencia (tests)
 
