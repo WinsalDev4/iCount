@@ -72,7 +72,7 @@ Tests con fetch mockeado. Documenta en docs/architecture/red.md con analogías a
 
 ## Pista B · Sonnet
 
-### [ ] B-1.1 · Design system Midnight Glass
+### [x] B-1.1 · Design system Midnight Glass
 - **Rama:** `feature/b-1.1-design-system` · **Depende de:** 1.0
 - **Ficheros exclusivos:** `mobile/src/shared/ui/**`, `mobile/src/app/_layout.tsx`, `mobile/src/app/dev/**`, `docs/features/design-system.md`
 - **Hecho cuando:** fuente Sora cargada (splash hasta que carga); componentes con props tipadas y accesibilidad: `Screen` (fondo con los dos resplandores SVG y área segura), `GlassCard` (BlurView, con *fallback* sin desenfoque), `AppText` (variantes de `theme.typography`), `Button` (primario, secundario, fantasma, cargando), `IconButton`, `Chip`, `SegmentedControl`, `ProgressBar`, `ProgressRing`, `Donut`, `Avatar` y `AvatarStack`, `ListItem`, `Icon` (iconos SVG de trazo: inicio, historial, más, planificar, hogar, atrás, enviar); test de cada componente; catálogo visible en `/dev/catalog` (solo en `__DEV__`).
