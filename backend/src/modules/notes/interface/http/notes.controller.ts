@@ -1,5 +1,12 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { ApiProblemResponses, zodToOpenApi } from '../../../../shared/interface/http/openapi.js';
 import { ZodValidationPipe } from '../../../../shared/interface/http/zod-validation.pipe.js';
@@ -19,6 +26,7 @@ import {
  * Spring analogy: a @RestController that delegates to a @Service.
  */
 @ApiTags('notes (template)')
+@ApiBearerAuth()
 @Controller('notes')
 export class NotesController {
   constructor(
