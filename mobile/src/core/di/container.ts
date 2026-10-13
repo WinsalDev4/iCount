@@ -1,5 +1,6 @@
 import { env, type DataSource } from '@/core/config/env';
 import { createActivityModule } from '@/features/activity/activity.module';
+import { createAdvisorModule } from '@/features/advisor/advisor.module';
 import { createAuthModule } from '@/features/auth/auth.module';
 import { createBudgetsModule } from '@/features/budgets/budgets.module';
 import { createCategoriesModule } from '@/features/categories/categories.module';
@@ -21,6 +22,7 @@ export interface ContainerConfig {
 export function createContainer(config: ContainerConfig = { dataSource: env.dataSource }) {
   return {
     activity: createActivityModule(config),
+    advisor: createAdvisorModule(config),
     auth: createAuthModule(config),
     budgets: createBudgetsModule(config),
     categories: createCategoriesModule(config),

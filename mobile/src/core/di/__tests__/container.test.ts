@@ -7,6 +7,7 @@ describe('createContainer', () => {
     expect(Object.keys(container)).toEqual(
       expect.arrayContaining([
         'activity',
+        'advisor',
         'auth',
         'budgets',
         'categories',
