@@ -87,7 +87,7 @@ Documenta en docs/features/design-system.md (analogía: un MaterialTheme / desig
 No instales dependencias; si falta alguna, anótala en el PR.
 ```
 
-### [ ] B-1.2 · Navegación por pestañas
+### [x] B-1.2 · Navegación por pestañas
 - **Rama:** `feature/b-1.2-navegacion` · **Depende de:** B-1.1
 - **Ficheros exclusivos:** `mobile/src/app/**` (salvo `_layout.tsx` raíz, solo para registrar grupos), `mobile/src/shared/ui/TabBar*`, `docs/features/navegacion.md`
 - **Hecho cuando:** grupo `(tabs)` con TabBar de cristal propia (Inicio, Historial, botón central +, Planificar, Hogar); el + abre la ruta modal `add`; pantallas provisionales con el design system; la pantalla actual de transactions pasa a Inicio; rutas tipadas; deep link `icount://` probado; test del TabBar.
