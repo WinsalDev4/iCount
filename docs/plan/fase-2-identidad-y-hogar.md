@@ -24,7 +24,7 @@ No implementes casos de uso ni pantallas (son de la pista B) ni endpoints (A-2.1
 
 ## Pista A · Opus
 
-### [ ] A-2.1 · Backend: autenticación
+### [x] A-2.1 · Backend: autenticación
 - **Rama:** `feature/a-2.1-backend-auth` · **Depende de:** 2.0
 - **Ficheros exclusivos:** `backend/**`, `docs/backend/auth.md`
 - **Hecho cuando:** tablas de usuarios, tokens mágicos (un solo uso, 15 min, guardados con hash) y refresh tokens; endpoints `POST /auth/magic-link`, `/auth/verify`, `/auth/refresh` y `/auth/logout`; guard JWT; límite de peticiones en `magic-link`; adaptador de email detrás de una interfaz (Mailpit en desarrollo); el enlace abre `icount://auth/verify?token=…`; tests e2e (reutilización de refresh token → revocación de la familia).
