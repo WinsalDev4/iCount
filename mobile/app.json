@@ -47,6 +47,13 @@
         {
           "faceIDPermission": "Permite que $(PRODUCT_NAME) use Face ID para desbloquear tu sesión."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#8C7BFF",
+          "defaultChannel": "default"
+        }
       ]
     ],
     "scheme": "icount",
