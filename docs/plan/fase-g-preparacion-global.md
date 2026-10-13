@@ -6,7 +6,7 @@
 
 ---
 
-## [ ] G.0 · Preparación global — Opus, en solitario
+## [x] G.0 · Preparación global — Opus, en solitario
 - **Rama:** un PR por bloque: `feature/g.0-fase-3`, `feature/g.0-fase-4`, `feature/g.0-fase-5`, `feature/g.0-fase-7`, `feature/g.0-fase-6-tecnica` · **Depende de:** `2.0` ✅ (no de la `2.9`: la fase 2 se integra aparte)
 - **Orden y desbloqueos** (cada PR se fusiona antes de empezar el siguiente):
   1. **Fase 3** → ADR-0014, dependencias (`react-native-mmkv`, persistencia de TanStack Query, `@shopify/flash-list`), contratos de transacciones/categorías/resúmenes, puertos ampliados. Marca `3.0` `[x]`. *Desbloquea B-3.1, B-3.2, B-3.3.*
