@@ -15,3 +15,4 @@ Rama: feature/<nombre> · Estado: en curso | hecho
 | Feature | Estado |
 |---|---|
 | [Resumen mensual (slice de referencia)](resumen-mensual.md) | Hecho (datos en memoria) |
+| [Design system Midnight Glass](design-system.md) | Hecho (sin comprobación visual en dispositivo) |
