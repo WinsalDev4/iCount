@@ -169,11 +169,9 @@ export function useHistoryViewModel() {
     );
 
     const items: Transaction[] = list.data?.pages.flatMap((page) => page.items) ?? [];
-    const listStatus: HistoryListStatus = list.isError
-      ? 'error'
-      : list.isPending
-        ? 'loading'
-        : 'ready';
+    // A failed refresh keeps the pages already loaded (offline).
+    const listStatus: HistoryListStatus =
+      list.isError && list.data === undefined ? 'error' : list.isPending ? 'loading' : 'ready';
 
     return {
       status: 'ready',

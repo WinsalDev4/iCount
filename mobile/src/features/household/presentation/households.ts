@@ -5,7 +5,11 @@ import { queryKeys } from '@/core/query/queryKeys';
 
 import type { Household } from '../domain/Household';
 
-/** The households of the signed-in user. Not persisted on disk: it lists emails of members. */
+/**
+ * The households of the signed-in user. Persisted with the rest of the cache (ADR-0014): the app
+ * must open offline on the active household. It holds members' emails, no more sensitive than the
+ * movements already cached, and the whole cache is wiped on sign-out.
+ */
 export function useMyHouseholds({ enabled = true }: { enabled?: boolean } = {}) {
   const { getMyHouseholds } = useDependencies().household;
   return useQuery({
@@ -13,7 +17,6 @@ export function useMyHouseholds({ enabled = true }: { enabled?: boolean } = {}) 
     queryFn: () => getMyHouseholds.execute(),
     enabled,
     staleTime: Infinity,
-    meta: { persist: false },
   });
 }
 

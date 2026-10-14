@@ -145,7 +145,8 @@ export function useTransactionDetailViewModel(id: string | undefined) {
 
   const state = useMemo<DetailUiState>(() => {
     if (id === undefined) return { status: 'not-found' };
-    if (detail.isError) {
+    // A movement already loaded stays on screen if a refresh fails (offline).
+    if (detail.isError && detail.data === undefined) {
       return detail.error instanceof TransactionError && detail.error.reason === 'not-found'
         ? { status: 'not-found' }
         : { status: 'error', message: transactionErrorMessage(detail.error) };
@@ -194,6 +195,7 @@ export function useTransactionDetailViewModel(id: string | undefined) {
     id,
     detail.isError,
     detail.error,
+    detail.data,
     tx,
     household,
     mode,

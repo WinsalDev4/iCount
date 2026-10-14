@@ -201,4 +201,19 @@ describe('useHomeViewModel', () => {
     });
     await waitFor(() => expect(hook.result.current.state.status).toBe('success'));
   });
+
+  it('keeps showing the last data when a refresh fails (offline)', async () => {
+    const kit = await setup();
+    const shown = success(kit.hook).recent.map((r) => r.title);
+    jest
+      .spyOn(kit.repository, 'findByMonth')
+      .mockRejectedValue(new Error('Network request failed'));
+
+    await act(async () => {
+      await kit.queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all('h1') });
+    });
+
+    expect(kit.hook.result.current.state.status).toBe('success');
+    expect(success(kit.hook).recent.map((r) => r.title)).toEqual(shown);
+  });
 });

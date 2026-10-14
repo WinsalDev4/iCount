@@ -1,5 +1,5 @@
 import { Sora_400Regular, Sora_600SemiBold, Sora_700Bold } from '@expo-google-fonts/sora';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -7,13 +7,18 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 
 import { DependenciesProvider } from '@/core/di/DependenciesProvider';
+import { createPersistOptions } from '@/core/query/persistence';
 import { createQueryClient } from '@/core/query/queryClient';
+import { queryCacheStorage } from '@/core/storage/mmkvStorage';
 import { useSessionExpiry } from '@/features/auth/presentation/session';
 import { useAccess } from '@/features/auth/presentation/useAccess';
 import { theme } from '@/shared/ui/theme';
 
 // Module scope on purpose: it must run before the first render or the splash may already be gone.
 void SplashScreen.preventAutoHideAsync();
+
+// The last known data shows instantly on start, even offline (ADR-0014).
+const persistOptions = createPersistOptions(queryCacheStorage);
 
 // Keys must match `theme.fonts`.
 const fontMap = {
@@ -32,10 +37,10 @@ export default function RootLayout() {
 
   return (
     <DependenciesProvider>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
         <StatusBar style="light" />
         <AccessStack />
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </DependenciesProvider>
   );
 }

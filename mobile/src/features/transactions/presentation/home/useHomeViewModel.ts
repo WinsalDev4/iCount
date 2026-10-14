@@ -124,7 +124,13 @@ export function useHomeViewModel() {
 
   const state = useMemo<HomeUiState>(() => {
     if (!household) return { status: 'loading' };
-    if (allowance.error ?? week.error ?? recent.error) {
+    // A failed refresh keeps the last data (offline, ADR-0014): only an error with nothing to show
+    // replaces the screen.
+    const failed =
+      (allowance.error && allowance.data === undefined) ||
+      (week.error && week.data === undefined) ||
+      (recent.error && recent.data === undefined);
+    if (failed) {
       return { status: 'error', message: 'No hemos podido cargar tu resumen. Inténtalo de nuevo.' };
     }
     if (!allowance.data || !week.data || !recent.data) return { status: 'loading' };

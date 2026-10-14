@@ -36,11 +36,22 @@ async function seededClient() {
       retry: false,
     })
     .catch(() => undefined);
+  // Loaded once, then a refresh failed (offline): still has its last data.
+  await queryClient.prefetchQuery({ queryKey: ['stale'], queryFn: async () => 'last known' });
+  await queryClient
+    .fetchQuery({
+      queryKey: ['stale'],
+      queryFn: async () => {
+        throw new Error('Network request failed');
+      },
+      retry: false,
+    })
+    .catch(() => undefined);
   return queryClient;
 }
 
 describe('query cache persistence', () => {
-  it('restores successful queries after a restart, skipping opted-out and failed ones', async () => {
+  it('restores every query with data after a restart, skipping opted-out and empty ones', async () => {
     const storage = createMemoryStorage();
     const options = createPersistOptions(storage, { throttleTimeMs: 0 });
 
@@ -54,6 +65,8 @@ describe('query cache persistence', () => {
     expect(restarted.getQueryData(['summary'])).toEqual({ balance: 1_071_75 });
     expect(restarted.getQueryData(['private'])).toBeUndefined();
     expect(restarted.getQueryState(['broken'])).toBeUndefined();
+    // A failed refresh must not erase what the user could see offline.
+    expect(restarted.getQueryData(['stale'])).toBe('last known');
   });
 
   it('discards a cache written with another contract version', async () => {

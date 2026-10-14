@@ -4,6 +4,8 @@ import type { Query } from '@tanstack/react-query';
 
 import type { SyncKeyValueStorage } from '@/core/storage/keyValueStorage';
 
+import { deserializeCache, serializeCache } from './cacheSerialization';
+
 export const QUERY_CACHE_KEY = 'icount.query-cache.v1';
 /** Older than this, the persisted cache is discarded instead of shown. */
 export const QUERY_CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -15,10 +17,13 @@ export interface QueryMeta {
   readonly persist?: boolean;
 }
 
-/** Only successful data is persisted; errors and pending queries are not. */
+/**
+ * Every query that holds data is persisted, also when its last refresh failed: offline, a failed
+ * refresh must not erase the last known data from disk. Pending queries have nothing to keep.
+ */
 export function shouldPersistQuery(query: Query): boolean {
   const meta = query.meta as QueryMeta | undefined;
-  return query.state.status === 'success' && meta?.persist !== false;
+  return query.state.data !== undefined && meta?.persist !== false;
 }
 
 /**
@@ -35,6 +40,9 @@ export function createPersistOptions(
       key: QUERY_CACHE_KEY,
       // Writes are batched: at most one serialisation per second.
       throttleTime: throttleTimeMs,
+      // Money, Date and Map come back as themselves, not as plain JSON.
+      serialize: serializeCache,
+      deserialize: deserializeCache,
     }),
     maxAge: QUERY_CACHE_MAX_AGE_MS,
     buster: QUERY_CACHE_BUSTER,
