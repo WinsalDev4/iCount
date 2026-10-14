@@ -71,7 +71,7 @@ Rehaz Inicio (pantalla 04, maquetación C "gasto diario"): cifra de gasto diario
 Dominio: GetDailyAllowance (disponible / días restantes incluyendo hoy; tests de último día del mes, saldo negativo, febrero bisiesto) y GetWeeklySpending. Deja preparado, pero oculto, el bloque de presupuestos (llega en la fase 4). docs/features/inicio.md.
 ```
 
-### [ ] B-3.3 · Historial (06-B) y detalle
+### [x] B-3.3 · Historial (06-B) y detalle
 - **Rama:** `feature/b-3.3-historial` · **Depende de:** B-3.2
 - **Ficheros exclusivos:** `mobile/src/features/transactions/presentation/{history,detail}/**`, `mobile/src/app/(tabs)/history*`, `mobile/src/app/transaction/**`, `docs/features/historial.md`
 - **Hecho cuando:** calendario de intensidad con navegación entre meses; lista del día seleccionado con FlashList; búsqueda y filtros; detalle con edición y borrado (con confirmación) en `transaction/[id]`; tests.

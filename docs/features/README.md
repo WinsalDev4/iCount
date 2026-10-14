@@ -22,3 +22,4 @@ Rama: feature/<nombre> · Estado: en curso | hecho
 | [Configuración del hogar](hogar-setup.md) | Hecho (sin comprobación en dispositivo) |
 | [Añadir movimiento](anadir-movimiento.md) | Hecho (sin comprobación en dispositivo) |
 | [Inicio](inicio.md) | Hecho (sin comprobación en dispositivo) |
+| [Historial y detalle](historial.md) | Hecho (sin comprobación en dispositivo) |
