@@ -81,7 +81,7 @@ Implementa la feature debts (pantalla 08, maquetación B "detalle + simulador"):
 Casos de uso + InMemoryDebtRepository + debts.module.ts. Tests. docs/features/deudas.md.
 ```
 
-### [ ] B-4.3 · Pagos recurrentes
+### [x] B-4.3 · Pagos recurrentes
 - **Rama:** `feature/b-4.3-recurrentes` · **Depende de:** B-4.2
 - **Ficheros exclusivos:** `mobile/src/features/recurring/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/recurring/recurring.module.ts`, `mobile/src/app/recurring/**`, `docs/features/recurrentes.md`
 - **Hecho cuando:** lista y calendario de próximos vencimientos; crear un recurrente (factura, letra, suscripción) con periodicidad; recordatorio local con `expo-notifications` el día antes; tests.
