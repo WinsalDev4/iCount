@@ -10,6 +10,7 @@ import {
 } from '../../categories/domain/category.js';
 import type { HouseholdAccess } from '../../households/application/household-access.js';
 import type { Household } from '../../households/domain/household.js';
+import type { PushNotifications } from '../../push/domain/push.js';
 import type {
   DayTotals,
   MonthTotals,
@@ -22,6 +23,7 @@ import {
   TransactionIdConflictError,
   TransactionNotFoundError,
 } from '../domain/transaction.js';
+import { approvalPush } from './approval-push.js';
 import { decodeCursor, encodeCursor } from './cursor.js';
 
 export interface CreateTransactionInput extends Omit<EditableFields, 'payerId'> {
@@ -78,6 +80,7 @@ export class CreateTransaction {
     private readonly clock: Clock,
     private readonly ids: IdGenerator,
     private readonly log: ActivityLog,
+    private readonly push: PushNotifications,
   ) {}
 
   /** Returns the movement and whether it was created now (false = idempotent replay). */
@@ -110,6 +113,8 @@ export class CreateTransaction {
       });
       await this.transactions.save(transaction);
       await this.log.record(movementEvent('transaction-created', actorId, transaction));
+      const notification = approvalPush('shared-expense', transaction, household);
+      if (notification) this.push.notify(notification);
       return { transaction, created: true };
     });
   }
@@ -134,6 +139,7 @@ export class UpdateTransaction {
     private readonly runner: TransactionRunner,
     private readonly clock: Clock,
     private readonly log: ActivityLog,
+    private readonly push: PushNotifications,
   ) {}
 
   execute(
@@ -155,6 +161,8 @@ export class UpdateTransaction {
       transaction.edit(household, changes, this.clock.now());
       await this.transactions.save(transaction);
       await this.log.record(movementEvent('transaction-updated', actorId, transaction));
+      const notification = approvalPush('approval-pending', transaction, household);
+      if (notification) this.push.notify(notification);
       return transaction;
     });
   }

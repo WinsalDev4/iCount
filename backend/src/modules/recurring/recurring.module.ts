@@ -12,6 +12,7 @@ import { DebtRepository } from '../debts/domain/debt.js';
 import { HouseholdAccess } from '../households/application/household-access.js';
 import { HouseholdRepository } from '../households/domain/household.js';
 import { HouseholdsModule } from '../households/households.module.js';
+import { PushNotifications } from '../push/domain/push.js';
 import { TransactionRepository } from '../transactions/domain/transaction-repository.js';
 import { TransactionsModule } from '../transactions/transactions.module.js';
 import {
@@ -70,6 +71,7 @@ import { RecurringController } from './interface/http/recurring.controller.js';
         IdGenerator,
         DebtRepository,
         ActivityLog,
+        PushNotifications,
       ],
       useFactory: (...deps: ConstructorParameters<typeof MaterializeDueRecurringPayments>) =>
         new MaterializeDueRecurringPayments(...deps),

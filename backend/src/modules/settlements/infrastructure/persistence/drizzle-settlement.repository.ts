@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { and, count, desc, eq, gte, isNull, lte, or, type SQL, sql } from 'drizzle-orm';
 
 import { DatabaseContext } from '../../../../shared/database/database-context.js';
+import { householdsTable } from '../../../households/infrastructure/persistence/households.schema.js';
 import {
   transactionSharesTable,
   transactionsTable,
@@ -42,6 +43,14 @@ export class DrizzleSettlementRepository extends SettlementRepository {
       .where(eq(st.householdId, householdId))
       .orderBy(desc(st.settledOn), desc(st.createdAt), desc(st.id));
     return rows.map((row) => Settlement.restore(row));
+  }
+
+  async sharedHouseholdIds(): Promise<string[]> {
+    const rows = await this.context.db
+      .select({ id: householdsTable.id })
+      .from(householdsTable)
+      .where(eq(householdsTable.kind, 'shared'));
+    return rows.map((row) => row.id);
   }
 
   /** Five aggregate queries; the arithmetic (nets, transfers) stays in the use case. */

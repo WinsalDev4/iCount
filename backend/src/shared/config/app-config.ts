@@ -17,6 +17,8 @@ const envSchema = z.object({
   MAIL_FROM: z.string().min(3).default('iCount <no-reply@icount.local>'),
   /** Where magic links point; the token is appended as `?token=…`. */
   MAGIC_LINK_URL: z.url().default('icount://auth/verify'),
+  /** Optional: only needed when "enhanced push security" is on in the Expo project (ADR-0017). */
+  EXPO_ACCESS_TOKEN: z.string().min(1).optional(),
 });
 
 export type NodeEnv = z.infer<typeof envSchema>['NODE_ENV'];
@@ -35,6 +37,10 @@ export interface MailConfig {
   readonly from: string;
 }
 
+export interface PushConfig {
+  readonly expoAccessToken: string | null;
+}
+
 export interface AppConfig {
   readonly nodeEnv: NodeEnv;
   readonly port: number;
@@ -42,6 +48,7 @@ export interface AppConfig {
   readonly logLevel: LogLevel;
   readonly auth: AuthConfig;
   readonly mail: MailConfig;
+  readonly push: PushConfig;
 }
 
 /** Injection token for the validated configuration. */
@@ -75,5 +82,6 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
       magicLinkUrl: env_.MAGIC_LINK_URL,
     },
     mail: { smtpUrl: env_.SMTP_URL, from: env_.MAIL_FROM },
+    push: { expoAccessToken: env_.EXPO_ACCESS_TOKEN ?? null },
   };
 }

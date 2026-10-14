@@ -5,14 +5,18 @@ import { IdGenerator } from '../../shared/application/id-generator.js';
 import { TransactionRunner } from '../../shared/application/transaction-runner.js';
 import { ActivityLog } from '../activity/domain/activity.js';
 import { HouseholdAccess } from '../households/application/household-access.js';
+import { HouseholdRepository } from '../households/domain/household.js';
 import { HouseholdsModule } from '../households/households.module.js';
+import { PushNotifications } from '../push/domain/push.js';
 import {
   CreateSettlement,
   GetBalance,
   ListSettlements,
+  SendSettleReminders,
 } from './application/settlements.use-cases.js';
 import { SettlementRepository } from './domain/settlement.js';
 import { DrizzleSettlementRepository } from './infrastructure/persistence/drizzle-settlement.repository.js';
+import { SettleRemindersScheduler } from './infrastructure/settle-reminders.scheduler.js';
 import { SettlementsController } from './interface/http/settlements.controller.js';
 
 /** Net balance per member, suggested transfers and recorded settlements (ADR-0016). */
@@ -40,6 +44,13 @@ import { SettlementsController } from './interface/http/settlements.controller.j
       useFactory: (...deps: ConstructorParameters<typeof CreateSettlement>) =>
         new CreateSettlement(...deps),
     },
+    {
+      provide: SendSettleReminders,
+      inject: [HouseholdRepository, SettlementRepository, PushNotifications],
+      useFactory: (...deps: ConstructorParameters<typeof SendSettleReminders>) =>
+        new SendSettleReminders(...deps),
+    },
+    SettleRemindersScheduler,
   ],
 })
 export class SettlementsModule {}

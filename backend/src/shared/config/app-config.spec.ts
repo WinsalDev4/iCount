@@ -19,6 +19,13 @@ describe('loadConfig', () => {
         magicLinkUrl: 'icount://auth/verify',
       },
       mail: { smtpUrl: 'smtp://localhost:1025', from: 'iCount <no-reply@icount.local>' },
+      push: { expoAccessToken: null },
+    });
+  });
+
+  it('reads the optional Expo access token', () => {
+    expect(loadConfig({ ...required, EXPO_ACCESS_TOKEN: 'expo-token' }).push).toEqual({
+      expoAccessToken: 'expo-token',
     });
   });
 

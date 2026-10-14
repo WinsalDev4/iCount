@@ -10,6 +10,7 @@ import { DebtsModule } from './modules/debts/debts.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { HouseholdsModule } from './modules/households/households.module.js';
 import { NotesModule } from './modules/notes/notes.module.js';
+import { PushModule } from './modules/push/push.module.js';
 import { RecurringModule } from './modules/recurring/recurring.module.js';
 import { SettlementsModule } from './modules/settlements/settlements.module.js';
 import { TransactionsModule } from './modules/transactions/transactions.module.js';
@@ -56,6 +57,8 @@ export class AppModule {
         EmailModule,
         // Every module writes to the household feed through this global port.
         ActivityLogModule,
+        // Push notifications, also a global port (ADR-0017).
+        PushModule,
         // Cron jobs (recurring payments). Not started in tests: they call the jobs directly.
         ...(config.nodeEnv === 'test' ? [] : [ScheduleModule.forRoot()]),
         ...featureModules,

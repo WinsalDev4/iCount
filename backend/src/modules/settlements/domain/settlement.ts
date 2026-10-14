@@ -78,6 +78,8 @@ export abstract class SettlementRepository {
   /** Newest first. */
   abstract listForHousehold(householdId: string): Promise<Settlement[]>;
   abstract memberTotals(householdId: string, period: BalancePeriod): Promise<MemberTotals>;
+  /** Households where balances make sense (for the weekly reminder). */
+  abstract sharedHouseholdIds(): Promise<string[]>;
 }
 
 export class InvalidSettlementError extends DomainError {

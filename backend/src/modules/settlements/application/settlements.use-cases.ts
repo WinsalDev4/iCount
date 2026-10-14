@@ -5,9 +5,12 @@ import type { IdGenerator } from '../../../shared/application/id-generator.js';
 import type { TransactionRunner } from '../../../shared/application/transaction-runner.js';
 import type { ActivityLog } from '../../activity/domain/activity.js';
 import type { HouseholdAccess } from '../../households/application/household-access.js';
+import type { Household, HouseholdRepository } from '../../households/domain/household.js';
+import type { PushNotifications } from '../../push/domain/push.js';
 import {
   type BalancePeriod,
   InvalidSettlementError,
+  type MemberTotals,
   Settlement,
   type SettlementMethod,
   type SettlementRepository,
@@ -33,6 +36,30 @@ export interface HouseholdBalance {
  * Former members with movements still appear: otherwise the nets would not add
  * up to zero.
  */
+export function balanceOf(household: Household, totals: MemberTotals): HouseholdBalance {
+  const memberIds = [
+    ...new Set([
+      ...household.members.map((member) => member.userId),
+      ...totals.paid.keys(),
+      ...totals.owed.keys(),
+    ]),
+  ];
+  const members = memberIds.map((memberId) => {
+    const paidMinor = totals.paid.get(memberId) ?? 0;
+    const owedMinor = totals.owed.get(memberId) ?? 0;
+    return { memberId, paidMinor, owedMinor, netMinor: paidMinor - owedMinor };
+  });
+  return {
+    householdId: household.id,
+    currency: household.currency,
+    members,
+    suggestedTransfers: suggestTransfers(
+      members.map(({ memberId, netMinor }) => ({ memberId, netMinor })),
+    ),
+    pendingApprovalCount: totals.pendingApprovalCount,
+  };
+}
+
 export class GetBalance {
   constructor(
     private readonly access: HouseholdAccess,
@@ -48,28 +75,7 @@ export class GetBalance {
     if (period.from && period.to && period.from > period.to) {
       throw new InvalidSettlementError('`from` must not be after `to`.');
     }
-    const totals = await this.settlements.memberTotals(householdId, period);
-    const memberIds = [
-      ...new Set([
-        ...household.members.map((member) => member.userId),
-        ...totals.paid.keys(),
-        ...totals.owed.keys(),
-      ]),
-    ];
-    const members = memberIds.map((memberId) => {
-      const paidMinor = totals.paid.get(memberId) ?? 0;
-      const owedMinor = totals.owed.get(memberId) ?? 0;
-      return { memberId, paidMinor, owedMinor, netMinor: paidMinor - owedMinor };
-    });
-    return {
-      householdId,
-      currency: household.currency,
-      members,
-      suggestedTransfers: suggestTransfers(
-        members.map(({ memberId, netMinor }) => ({ memberId, netMinor })),
-      ),
-      pendingApprovalCount: totals.pendingApprovalCount,
-    };
+    return balanceOf(household, await this.settlements.memberTotals(householdId, period));
   }
 }
 
@@ -129,5 +135,43 @@ export class CreateSettlement {
       });
       return settlement;
     });
+  }
+}
+
+/** Debts below this are not worth a reminder (10 €). */
+export const SETTLE_REMINDER_THRESHOLD_MINOR = 1_000;
+
+/**
+ * Weekly job (ADR-0017): reminds every member who owes more than the threshold
+ * in a shared household. No amounts in the text: the lock screen is public.
+ */
+export class SendSettleReminders {
+  constructor(
+    private readonly households: HouseholdRepository,
+    private readonly settlements: SettlementRepository,
+    private readonly push: PushNotifications,
+  ) {}
+
+  async execute(): Promise<{ reminded: number }> {
+    let reminded = 0;
+    for (const householdId of await this.settlements.sharedHouseholdIds()) {
+      const household = await this.households.findById(householdId);
+      if (!household) continue;
+      const balance = balanceOf(household, await this.settlements.memberTotals(householdId, {}));
+      const debtors = balance.members
+        .filter((member) => member.netMinor <= -SETTLE_REMINDER_THRESHOLD_MINOR)
+        .map((member) => member.memberId)
+        .filter((memberId) => household.isMember(memberId));
+      if (debtors.length === 0) continue;
+      this.push.notify({
+        recipients: debtors,
+        event: 'settle-reminder',
+        title: `Toca saldar cuentas en ${household.name}`,
+        body: 'Tienes pagos pendientes con el hogar. Ábrelo para ver a quién y cuánto.',
+        url: '/settle',
+      });
+      reminded += debtors.length;
+    }
+    return { reminded };
   }
 }

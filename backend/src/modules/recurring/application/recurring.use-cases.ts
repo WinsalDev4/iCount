@@ -15,6 +15,8 @@ import { type DebtRepository, InvalidDebtPaymentError } from '../../debts/domain
 import type { HouseholdAccess } from '../../households/application/household-access.js';
 import type { HouseholdRepository } from '../../households/domain/household.js';
 import { CurrencyMismatchError } from '../../households/domain/households.errors.js';
+import type { PushNotifications } from '../../push/domain/push.js';
+import { approvalPush } from '../../transactions/application/approval-push.js';
 import type { TransactionRepository } from '../../transactions/domain/transaction-repository.js';
 import { Transaction } from '../../transactions/domain/transaction.js';
 import {
@@ -225,6 +227,7 @@ export class MaterializeDueRecurringPayments {
     private readonly ids: IdGenerator,
     private readonly debts: DebtRepository,
     private readonly log: ActivityLog,
+    private readonly push: PushNotifications,
   ) {}
 
   async execute(today: string): Promise<{ created: number }> {
@@ -266,6 +269,8 @@ export class MaterializeDueRecurringPayments {
               description: p.name,
             });
             await this.payments.linkOccurrence(payment.id, next, transactionId);
+            const notification = approvalPush('shared-expense', transaction, household);
+            if (notification) this.push.notify(notification);
             // A loan instalment counts as a payment of its debt straight away.
             if (p.debtId !== null && p.type === 'expense') {
               await this.debts.linkPayment(p.debtId, transactionId);

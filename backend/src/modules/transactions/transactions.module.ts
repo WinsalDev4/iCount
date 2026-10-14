@@ -8,6 +8,7 @@ import { CategoriesModule } from '../categories/categories.module.js';
 import { CategoryRepository } from '../categories/domain/category.js';
 import { HouseholdAccess } from '../households/application/household-access.js';
 import { HouseholdsModule } from '../households/households.module.js';
+import { PushNotifications } from '../push/domain/push.js';
 import {
   CreateTransaction,
   DeleteTransaction,
@@ -37,6 +38,7 @@ import { TransactionsController } from './interface/http/transactions.controller
         Clock,
         IdGenerator,
         ActivityLog,
+        PushNotifications,
       ],
       useFactory: (...deps: ConstructorParameters<typeof CreateTransaction>) =>
         new CreateTransaction(...deps),
@@ -50,6 +52,7 @@ import { TransactionsController } from './interface/http/transactions.controller
         TransactionRunner,
         Clock,
         ActivityLog,
+        PushNotifications,
       ],
       useFactory: (...deps: ConstructorParameters<typeof UpdateTransaction>) =>
         new UpdateTransaction(...deps),
