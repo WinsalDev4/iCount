@@ -1,5 +1,6 @@
 import type { UserId } from '@/core/domain/Ids';
 import type { Money } from '@/core/domain/Money';
+import { uuidV4 } from '@/core/domain/uuid';
 
 import type { CategoryId, NewTransaction, Transaction, TransactionType } from '../Transaction';
 import { TransactionError } from '../TransactionError';
@@ -71,8 +72,9 @@ function startOfDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
+/** The API only accepts UUIDs as client ids. */
 function defaultId(): string {
-  return `tx-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+  return uuidV4();
 }
 
 /**
