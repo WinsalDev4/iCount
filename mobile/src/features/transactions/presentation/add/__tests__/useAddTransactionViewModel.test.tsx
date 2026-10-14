@@ -195,7 +195,8 @@ describe('useAddTransactionViewModel', () => {
       release();
       await pending;
     });
-    expect(ready(kit.hook).saving).toBe(false);
+    // "Saving" lasts until the lists have been refreshed with the server's truth.
+    await waitFor(() => expect(ready(kit.hook).saving).toBe(false));
   });
 
   it('rolls the list back and shows the reason when the server refuses', async () => {

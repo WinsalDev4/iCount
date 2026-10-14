@@ -3,7 +3,10 @@ import type { DataSource } from '@/core/config/env';
 import { InMemoryTransactionRepository } from './data/InMemoryTransactionRepository';
 import type { TransactionRepository } from './domain/TransactionRepository';
 import { CreateTransaction } from './domain/usecases/CreateTransaction';
+import { GetDailyAllowance } from './domain/usecases/GetDailyAllowance';
 import { GetMonthlySummary } from './domain/usecases/GetMonthlySummary';
+import { GetRecentTransactions } from './domain/usecases/GetRecentTransactions';
+import { GetWeeklySpending } from './domain/usecases/GetWeeklySpending';
 
 export interface TransactionsModuleConfig {
   readonly dataSource: DataSource;
@@ -21,6 +24,9 @@ export function createTransactionsModule({ dataSource }: TransactionsModuleConfi
     transactionRepository: repository,
     getMonthlySummary: new GetMonthlySummary(repository, 'EUR'),
     createTransaction: new CreateTransaction(repository),
+    getDailyAllowance: new GetDailyAllowance(repository, 'EUR'),
+    getWeeklySpending: new GetWeeklySpending(repository, 'EUR'),
+    getRecentTransactions: new GetRecentTransactions(repository),
   };
 }
 

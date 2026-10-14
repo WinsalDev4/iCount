@@ -1,5 +1,6 @@
 export { AppText, type AppTextProps, type TextTone, type TextVariant } from './AppText';
 export { Avatar, AvatarStack, type AvatarProps, type AvatarStackProps } from './Avatar';
+export { BarChart, type Bar, type BarChartProps } from './BarChart';
 export { Button, type ButtonProps, type ButtonVariant } from './Button';
 export { Chip, type ChipProps } from './Chip';
 export { Donut, type DonutProps } from './Donut';

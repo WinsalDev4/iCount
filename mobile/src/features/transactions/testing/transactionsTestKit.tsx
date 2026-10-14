@@ -14,7 +14,10 @@ import {
 } from '../data/InMemoryTransactionRepository';
 import type { TransactionRepository } from '../domain/TransactionRepository';
 import { CreateTransaction } from '../domain/usecases/CreateTransaction';
+import { GetDailyAllowance } from '../domain/usecases/GetDailyAllowance';
 import { GetMonthlySummary } from '../domain/usecases/GetMonthlySummary';
+import { GetRecentTransactions } from '../domain/usecases/GetRecentTransactions';
+import { GetWeeklySpending } from '../domain/usecases/GetWeeklySpending';
 
 export const ME = 'u-me' as UserId;
 export const ANA = 'u-ana' as UserId;
@@ -76,6 +79,9 @@ export function createTransactionsTestKit(
       transactionRepository: repository,
       getMonthlySummary: new GetMonthlySummary(repository, 'EUR'),
       createTransaction: new CreateTransaction(repository),
+      getDailyAllowance: new GetDailyAllowance(repository, 'EUR'),
+      getWeeklySpending: new GetWeeklySpending(repository, 'EUR'),
+      getRecentTransactions: new GetRecentTransactions(repository),
     },
   };
 
