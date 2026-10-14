@@ -27,7 +27,7 @@ export function createHouseholdTestKit(
     options.repository ??
     new InMemoryHouseholdRepository({ randomCode: () => 'ABCD2345', ...options.memory });
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    defaultOptions: { queries: { retry: false, gcTime: Infinity }, mutations: { retry: false } },
   });
 
   const base = createContainer({ dataSource: 'memory' });

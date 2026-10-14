@@ -1,20 +1,16 @@
 import type { HouseholdId, UserId } from '@/core/domain/Ids';
 import { Money } from '@/core/domain/Money';
 
+import { currentMemoryIdentity, type MemoryIdentity } from '@/features/auth/data/memoryIdentity';
+
 import type { Household, Invitation, Member } from '../domain/Household';
 import { HouseholdError } from '../domain/HouseholdError';
 import type { CreateHouseholdInput, HouseholdRepository } from '../domain/HouseholdRepository';
 import { normalizeInviteCode } from '../domain/inviteCode';
 import { isValidShares, type SplitRule } from '../domain/SplitRule';
 
-export interface MemoryIdentity {
-  readonly userId: UserId;
-  readonly email: string;
-  readonly displayName: string | null;
-}
-
 export interface InMemoryHouseholdOptions {
-  /** Who is "me" in this device-only world. */
+  /** Who is "me"; by default whoever signed in (see features/auth/data/memoryIdentity). */
   readonly me?: MemoryIdentity;
   readonly now?: () => Date;
   /** 8-character code generator; inject a fixed one in tests. */
@@ -37,14 +33,19 @@ export class InMemoryHouseholdRepository implements HouseholdRepository {
   private households: Household[] = [];
   private readonly invites = new Map<string, HouseholdId>();
   private sequence = 0;
-  private readonly me: MemoryIdentity;
+  private readonly fixedMe: MemoryIdentity | undefined;
   private readonly now: () => Date;
   private readonly randomCode: () => string;
 
   constructor({ me, now, randomCode }: InMemoryHouseholdOptions = {}) {
-    this.me = me ?? { userId: 'user-me' as UserId, email: 'tu@icount.app', displayName: null };
+    this.fixedMe = me;
     this.now = now ?? (() => new Date());
     this.randomCode = randomCode ?? defaultRandomCode;
+  }
+
+  /** Read at every use, so a household created before signing in again keeps working. */
+  private get me(): MemoryIdentity {
+    return this.fixedMe ?? currentMemoryIdentity();
   }
 
   async getMine(): Promise<readonly Household[]> {

@@ -2,6 +2,7 @@ import type { DataSource } from '@/core/config/env';
 
 import { InMemoryTransactionRepository } from './data/InMemoryTransactionRepository';
 import type { TransactionRepository } from './domain/TransactionRepository';
+import { CreateTransaction } from './domain/usecases/CreateTransaction';
 import { GetMonthlySummary } from './domain/usecases/GetMonthlySummary';
 
 export interface TransactionsModuleConfig {
@@ -17,7 +18,9 @@ export function createTransactionsModule({ dataSource }: TransactionsModuleConfi
   const repository = createRepository(dataSource);
 
   return {
+    transactionRepository: repository,
     getMonthlySummary: new GetMonthlySummary(repository, 'EUR'),
+    createTransaction: new CreateTransaction(repository),
   };
 }
 
@@ -28,7 +31,7 @@ function createRepository(dataSource: DataSource): TransactionRepository {
     case 'memory':
       return new InMemoryTransactionRepository();
     case 'api':
-      // ApiTransactionRepository arrives with the transactions backend (phase 3, A-3.2).
-      throw new Error('transactions: the "api" data source is not available yet');
+      // ApiTransactionRepository exists (A-3.2); the container picks it in the 3.9 integration.
+      throw new Error('transactions: the "api" data source is chosen in the 3.9 integration');
   }
 }

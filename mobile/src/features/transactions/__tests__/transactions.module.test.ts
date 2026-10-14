@@ -13,7 +13,7 @@ describe('createTransactionsModule', () => {
     expect(summary.income.amountMinor).toBeGreaterThan(0);
   });
 
-  it('refuses the api data source until its repository exists', () => {
-    expect(() => createTransactionsModule({ dataSource: 'api' })).toThrow('not available yet');
+  it('leaves the api data source to the 3.9 integration', () => {
+    expect(() => createTransactionsModule({ dataSource: 'api' })).toThrow('3.9 integration');
   });
 });

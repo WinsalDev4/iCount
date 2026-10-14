@@ -308,14 +308,33 @@ describe('navigation', () => {
   it('opens the add modal from the central button and closes it again', async () => {
     await renderApp();
     await fireEvent.press(screen.getByRole('button', { name: 'Añadir movimiento' }));
-    expect(screen.getByRole('header', { name: 'Añadir movimiento' })).toBeOnTheScreen();
+    await settle();
+    expect(screen.getByRole('button', { name: 'Guardar' })).toBeOnTheScreen();
     await fireEvent.press(screen.getByRole('button', { name: 'Cerrar' }));
     await settle();
-    expect(screen.queryByRole('header', { name: 'Añadir movimiento' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Guardar' })).toBeNull();
+  });
+
+  it('types an amount on the keypad, saves and closes the modal', async () => {
+    await renderApp();
+    await fireEvent.press(screen.getByRole('button', { name: 'Añadir movimiento' }));
+    await settle();
+    expect(screen.getByRole('button', { name: 'Guardar' })).toBeDisabled(); // nothing typed yet
+    await fireEvent.press(screen.getByRole('button', { name: '1' }));
+    await fireEvent.press(screen.getByRole('button', { name: '2' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Coma' }));
+    await fireEvent.press(screen.getByRole('button', { name: '5' }));
+    expect(screen.getByLabelText('Importe 12,5 €')).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Guardar' }));
+    await settle();
+    expect(screen.queryByRole('button', { name: 'Guardar' })).toBeNull();
+    expect(screen.getByRole('tab', { name: 'Inicio' })).toBeSelected();
   });
 
   it('deep link /add opens the modal directly', async () => {
     await renderApp({ initialUrl: '/add' });
-    expect(screen.getByRole('header', { name: 'Añadir movimiento' })).toBeOnTheScreen();
+    await settle();
+    expect(screen.getByRole('button', { name: 'Guardar' })).toBeOnTheScreen();
   });
 });
