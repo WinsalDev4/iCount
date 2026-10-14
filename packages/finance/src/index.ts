@@ -5,6 +5,7 @@
  */
 export * from './amortization.ts';
 export * from './dates.ts';
+export * from './recurrence.ts';
 export * from './rounding.ts';
 export * from './split.ts';
 export * from './strategies.ts';

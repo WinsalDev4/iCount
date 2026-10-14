@@ -54,6 +54,17 @@ export function addMonths(date: LocalDate, months: number, anchorDay?: number): 
   });
 }
 
+/** Adds (or subtracts) calendar days; UTC arithmetic, so DST never shifts the result. */
+export function addDays(date: LocalDate, days: number): LocalDate {
+  const { year, month, day } = parseLocalDate(date);
+  const shifted = new Date(Date.UTC(year, month - 1, day + days));
+  return formatLocalDate({
+    year: shifted.getUTCFullYear(),
+    month: shifted.getUTCMonth() + 1,
+    day: shifted.getUTCDate(),
+  });
+}
+
 /** Lexicographic order of YYYY-MM-DD is chronological order. */
 export function compareLocalDates(a: LocalDate, b: LocalDate): number {
   return a < b ? -1 : a > b ? 1 : 0;
