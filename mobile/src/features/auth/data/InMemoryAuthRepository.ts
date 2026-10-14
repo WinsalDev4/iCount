@@ -4,6 +4,7 @@ import { AuthError } from '../domain/AuthError';
 import type { AuthRepository } from '../domain/AuthRepository';
 import { isValidEmail, normalizeEmail } from '../domain/email';
 import type { Session } from '../domain/User';
+import { setMemoryIdentity } from './memoryIdentity';
 
 /**
  * Development/test adapter (`EXPO_PUBLIC_DATA_SOURCE=memory`): no backend, no email.
@@ -21,13 +22,13 @@ export class InMemoryAuthRepository implements AuthRepository {
 
   async verifyMagicLink(token: string): Promise<Session> {
     if (!token.trim()) throw new AuthError('invalid-or-expired-link');
-    this.session = {
-      user: {
-        id: `user-${this.lastEmail}` as UserId,
-        email: this.lastEmail,
-        displayName: null,
-      },
+    const user = {
+      id: `user-${this.lastEmail}` as UserId,
+      email: this.lastEmail,
+      displayName: null,
     };
+    this.session = { user };
+    setMemoryIdentity({ userId: user.id, email: user.email, displayName: user.displayName });
     return this.session;
   }
 
@@ -37,5 +38,6 @@ export class InMemoryAuthRepository implements AuthRepository {
 
   async signOut(): Promise<void> {
     this.session = null;
+    setMemoryIdentity(null);
   }
 }

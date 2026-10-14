@@ -18,6 +18,7 @@ export {
 } from './SegmentedControl';
 export { SwitchRow, type SwitchRowProps } from './SwitchRow';
 export { ExpandableCard, type ExpandableCardProps } from './ExpandableCard';
+export { NumericKeypad, type NumericKey, type NumericKeypadProps } from './NumericKeypad';
 export { OptionCard, type OptionCardProps } from './OptionCard';
 export { TabBar, type TabBarItem, type TabBarProps } from './TabBar';
 export { TextField, type TextFieldProps } from './TextField';

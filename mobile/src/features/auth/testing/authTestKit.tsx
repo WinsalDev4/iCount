@@ -33,7 +33,7 @@ export function createAuthTestKit(
   const repository = options.repository ?? new InMemoryAuthRepository();
   const biometrics = options.biometrics ?? fakeBiometrics();
   const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    defaultOptions: { queries: { retry: false, gcTime: Infinity }, mutations: { retry: false } },
   });
 
   const base = createContainer({ dataSource: 'memory' });

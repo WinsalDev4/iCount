@@ -1,21 +1,27 @@
 import type { DataSource } from '@/core/config/env';
 import { notImplemented } from '@/core/di/notImplemented';
 
+import { InMemoryCategoryRepository } from './data/InMemoryCategoryRepository';
 import type { CategoryRepository } from './domain/CategoryRepository';
+import { ListCategories } from './domain/usecases/ListCategories';
 
 export interface CategoriesModuleConfig {
   readonly dataSource: DataSource;
 }
 
 /**
- * Stub from the global preparation (G.0, phase 3) so the container already
- * composes it. Phase 3 tasks fill in the in-memory and API repositories.
+ * Feature module: repository → use cases. `memory` has the built-in categories; the `api` source
+ * (ApiCategoryRepository needs the authenticated client the container owns) is chosen in 3.9.
  */
 export function createCategoriesModule(config: CategoriesModuleConfig) {
+  const repository: CategoryRepository =
+    config.dataSource === 'memory'
+      ? new InMemoryCategoryRepository()
+      : notImplemented<CategoryRepository>(`categories(${config.dataSource}).categoryRepository`);
+
   return {
-    categoryRepository: notImplemented<CategoryRepository>(
-      `categories(${config.dataSource}).categoryRepository`,
-    ),
+    categoryRepository: repository,
+    listCategories: new ListCategories(repository),
   };
 }
 
