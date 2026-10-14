@@ -1,6 +1,7 @@
 import { type SessionDto, sessionDtoSchema } from '@icount/contracts';
 import { z } from 'zod';
 
+import type { HttpError } from '@/core/network/HttpError';
 import type { HttpClient } from '@/core/network/httpClient';
 import type { Authenticator } from '@/core/network/withAuthentication';
 
@@ -21,6 +22,7 @@ type StoredUser = StoredSession['user'];
 export class AuthSession implements Authenticator {
   private access: { token: string; expiresAt: Date } | null = null;
   private inflight: Promise<string | null> | null = null;
+  private renewalFailure: HttpError | null = null;
   private readonly expiredListeners = new Set<() => void>();
 
   constructor(
@@ -70,6 +72,10 @@ export class AuthSession implements Authenticator {
     }
   }
 
+  lastRenewalFailure(): HttpError | null {
+    return this.renewalFailure;
+  }
+
   /** Called when the session dies on its own (revoked, expired). Returns an unsubscribe function. */
   onSessionExpired(listener: () => void): () => void {
     this.expiredListeners.add(listener);
@@ -93,13 +99,19 @@ export class AuthSession implements Authenticator {
       schema: sessionDtoSchema,
     });
     if (result.ok) {
+      this.renewalFailure = null;
       await this.persist(result.value);
       return result.value.accessToken;
     }
 
     const rejected = result.error.kind === 'http' && result.error.status === 401;
-    if (rejected) await this.expire();
+    if (rejected) {
+      this.renewalFailure = null;
+      await this.expire();
+      return null;
+    }
     // Offline, timeout or 5xx: keep the session; the next request will try again.
+    this.renewalFailure = result.error;
     return null;
   }
 

@@ -2,6 +2,8 @@ import { useQuery, useQueryClient, type QueryClient } from '@tanstack/react-quer
 import { useEffect } from 'react';
 
 import { useDependencies } from '@/core/di/DependenciesProvider';
+import { clearPersistedQueryCache } from '@/core/query/persistence';
+import { queryCacheStorage } from '@/core/storage/mmkvStorage';
 
 import { accessStore } from '../data/accessStore';
 import type { Session } from '../domain/User';
@@ -40,8 +42,15 @@ export async function startSession(queryClient: QueryClient, session: Session): 
  */
 export function endSession(queryClient: QueryClient): void {
   accessStore.getState().lock();
-  queryClient.clear();
+  // First "signed out" on the live session query: its observers (the access gate) re-render and
+  // the signed-in screens unmount. `clear()` alone would not notify them: mounted screens would
+  // keep showing the previous user's data.
   queryClient.setQueryData(sessionQueryKey, null);
+  queryClient.removeQueries({
+    predicate: (query) => query.queryKey[0] !== sessionQueryKey[0],
+  });
+  // Also on disk at once, not on the persister's next throttled write.
+  clearPersistedQueryCache(queryCacheStorage);
 }
 
 /**

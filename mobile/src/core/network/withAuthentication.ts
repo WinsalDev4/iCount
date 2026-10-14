@@ -1,5 +1,6 @@
 import { err } from '@/core/domain/Result';
 
+import type { HttpError } from './HttpError';
 import type { HttpClient } from './httpClient';
 
 /**
@@ -15,6 +16,11 @@ export interface Authenticator {
    * the session cannot be renewed.
    */
   refresh(rejectedToken: string): Promise<string | null>;
+  /**
+   * Why the last renewal produced no token while the session is still alive (offline, timeout,
+   * 5xx), or null. Lets callers report "no connection" instead of "signed out".
+   */
+  lastRenewalFailure?(): HttpError | null;
 }
 
 /**
@@ -26,11 +32,13 @@ export function withAuthentication(client: HttpClient, auth: Authenticator): Htt
     async request(path, options) {
       const token = await auth.accessToken();
       if (!token) {
-        return err({
-          kind: 'http',
-          status: 401,
-          problem: { type: 'about:blank', title: 'Unauthorized', status: 401 },
-        });
+        return err(
+          auth.lastRenewalFailure?.() ?? {
+            kind: 'http',
+            status: 401,
+            problem: { type: 'about:blank', title: 'Unauthorized', status: 401 },
+          },
+        );
       }
 
       const attempt = (bearer: string) =>

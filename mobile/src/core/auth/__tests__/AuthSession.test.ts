@@ -155,8 +155,14 @@ describe('AuthSession', () => {
     const result = await callProtected();
 
     expect(result.ok).toBe(false);
+    // Reported as what it is (no connection), not as a 401 that would read as "signed out".
+    expect(!result.ok && result.error.kind).toBe('network');
     expect(onExpired).not.toHaveBeenCalled();
     expect(await session.currentUser()).toMatchObject({ email: 'ana@icount.app' });
+
+    server.state.networkDown = false;
+    expect((await callProtected()).ok).toBe(true);
+    expect(session.lastRenewalFailure()).toBeNull();
   });
 
   it('does not call the API at all without a session', async () => {
