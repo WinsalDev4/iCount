@@ -49,7 +49,7 @@ Tests de mappers y del helper. docs/architecture/persistencia.md (analogía con 
 
 ## Pista B · Sonnet
 
-### [ ] B-3.1 · Añadir movimiento (05-A)
+### [x] B-3.1 · Añadir movimiento (05-A)
 - **Rama:** `feature/b-3.1-anadir` · **Depende de:** 3.0
 - **Ficheros exclusivos:** `mobile/src/features/transactions/{domain/usecases,presentation/add}/**`, `mobile/src/features/transactions/data/InMemory*`, `mobile/src/app/add.tsx`, `docs/features/anadir-movimiento.md`
 - **Hecho cuando:** teclado numérico propio con *haptics*; parser `parseAmountInput` en el dominio (`"12,5"` → 1250, separadores, máximo 2 decimales, entrada vacía) con tests exhaustivos; selector gasto o ingreso; chips de categoría; pagador y "compartido"; caso de uso `CreateTransaction` con validaciones; guarda y cierra el modal.
