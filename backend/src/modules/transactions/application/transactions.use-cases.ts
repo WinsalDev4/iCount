@@ -1,6 +1,7 @@
 import type { Clock } from '../../../shared/application/clock.js';
 import type { IdGenerator } from '../../../shared/application/id-generator.js';
 import type { TransactionRunner } from '../../../shared/application/transaction-runner.js';
+import type { ActivityEvent, ActivityLog } from '../../activity/domain/activity.js';
 import {
   acceptsType,
   CategoryTypeMismatchError,
@@ -47,6 +48,16 @@ async function loadForMember(
   }
 }
 
+/** Feed event about a movement (amount and description as they are now). */
+function movementEvent(
+  type: ActivityEvent['type'],
+  actorId: string,
+  transaction: Transaction,
+): ActivityEvent {
+  const { householdId, id, amountMinor, currency, description } = transaction.snapshot;
+  return { householdId, type, actorId, transactionId: id, amountMinor, currency, description };
+}
+
 async function assertCategory(
   categories: CategoryRepository,
   householdId: string,
@@ -66,6 +77,7 @@ export class CreateTransaction {
     private readonly runner: TransactionRunner,
     private readonly clock: Clock,
     private readonly ids: IdGenerator,
+    private readonly log: ActivityLog,
   ) {}
 
   /** Returns the movement and whether it was created now (false = idempotent replay). */
@@ -97,6 +109,7 @@ export class CreateTransaction {
         now: this.clock.now(),
       });
       await this.transactions.save(transaction);
+      await this.log.record(movementEvent('transaction-created', actorId, transaction));
       return { transaction, created: true };
     });
   }
@@ -120,6 +133,7 @@ export class UpdateTransaction {
     private readonly categories: CategoryRepository,
     private readonly runner: TransactionRunner,
     private readonly clock: Clock,
+    private readonly log: ActivityLog,
   ) {}
 
   execute(
@@ -140,6 +154,7 @@ export class UpdateTransaction {
       }
       transaction.edit(household, changes, this.clock.now());
       await this.transactions.save(transaction);
+      await this.log.record(movementEvent('transaction-updated', actorId, transaction));
       return transaction;
     });
   }
@@ -149,11 +164,16 @@ export class DeleteTransaction {
   constructor(
     private readonly access: HouseholdAccess,
     private readonly transactions: TransactionRepository,
+    private readonly runner: TransactionRunner,
+    private readonly log: ActivityLog,
   ) {}
 
-  async execute(actorId: string, id: string): Promise<void> {
-    await loadForMember(this.transactions, this.access, id, actorId);
-    await this.transactions.delete(id);
+  execute(actorId: string, id: string): Promise<void> {
+    return this.runner.run(async () => {
+      const { transaction } = await loadForMember(this.transactions, this.access, id, actorId);
+      await this.transactions.delete(id);
+      await this.log.record(movementEvent('transaction-deleted', actorId, transaction));
+    });
   }
 }
 

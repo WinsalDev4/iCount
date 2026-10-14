@@ -1,6 +1,9 @@
 import { Household } from '../../households/domain/household.js';
 import {
+  AlreadyDecidedError,
+  CannotApproveOwnError,
   InvalidTransactionError,
+  NotAnApproverError,
   NotSharedHouseholdError,
   PayerNotMemberError,
   Transaction,
@@ -85,5 +88,79 @@ describe('Transaction', () => {
       now,
     });
     expect(() => Transaction.create(personal, base)).toThrow(NotSharedHouseholdError);
+  });
+
+  describe('approval (ADR-0016)', () => {
+    const marta = { userId: 'marta', email: 'marta@icount.app', displayName: 'Marta' };
+    const later = new Date('2026-10-15T10:00:00Z');
+    function threeMembers() {
+      const household = sharedHousehold();
+      household.addMember(marta, now);
+      return household;
+    }
+
+    it('a shared movement waits for the other members; a private one does not', () => {
+      const household = threeMembers();
+      const shared = Transaction.create(household, base);
+      expect(shared.snapshot.approvalStatus).toBe('pending');
+      expect(shared.approvers).toEqual(['leo', 'marta']);
+      expect(shared.counts).toBe(false);
+
+      const own = Transaction.create(household, { ...base, shared: false });
+      expect(own.snapshot.approvalStatus).toBeNull();
+      expect(own.counts).toBe(true);
+    });
+
+    it('is approved when every other member approves', () => {
+      const transaction = Transaction.create(threeMembers(), base);
+
+      transaction.decide('leo', 'approve', null, later);
+      expect(transaction.snapshot.approvalStatus).toBe('pending');
+      transaction.decide('marta', 'approve', null, later);
+
+      expect(transaction.snapshot.approvalStatus).toBe('approved');
+      expect(transaction.counts).toBe(true);
+    });
+
+    it('one rejection (with a reason) is enough to reject it', () => {
+      const transaction = Transaction.create(threeMembers(), base);
+
+      expect(() => transaction.decide('leo', 'reject', '  ', later)).toThrow(
+        InvalidTransactionError,
+      );
+      transaction.decide('leo', 'reject', ' No fue compartido ', later);
+
+      expect(transaction.snapshot.approvalStatus).toBe('rejected');
+      expect(transaction.snapshot.approvals[0]?.reason).toBe('No fue compartido');
+      expect(() => transaction.decide('marta', 'approve', null, later)).toThrow(
+        AlreadyDecidedError,
+      );
+    });
+
+    it('nobody approves their own movement, decides twice or decides on what is not theirs', () => {
+      const household = threeMembers();
+      const transaction = Transaction.create(household, base);
+
+      expect(() => transaction.decide('ana', 'approve', null, later)).toThrow(
+        CannotApproveOwnError,
+      );
+      expect(() => transaction.decide('stranger', 'approve', null, later)).toThrow(
+        NotAnApproverError,
+      );
+      transaction.decide('leo', 'approve', null, later);
+      expect(() => transaction.decide('leo', 'approve', null, later)).toThrow(AlreadyDecidedError);
+    });
+
+    it('an edit starts a new approval round', () => {
+      const household = threeMembers();
+      const transaction = Transaction.create(household, base);
+      transaction.decide('leo', 'approve', null, later);
+      transaction.decide('marta', 'approve', null, later);
+
+      transaction.edit(household, { amountMinor: 2_000 }, later);
+
+      expect(transaction.snapshot.approvalStatus).toBe('pending');
+      expect(transaction.snapshot.approvals).toEqual([]);
+    });
   });
 });

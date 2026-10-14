@@ -3,6 +3,7 @@ import type { CurrencyCode } from '@icount/contracts';
 import type { Clock } from '../../../shared/application/clock.js';
 import type { IdGenerator } from '../../../shared/application/id-generator.js';
 import type { TransactionRunner } from '../../../shared/application/transaction-runner.js';
+import type { ActivityLog } from '../../activity/domain/activity.js';
 import type { UserRepository } from '../../auth/domain/user.js';
 import {
   Household,
@@ -124,6 +125,7 @@ export class JoinHousehold {
     private readonly users: UserRepository,
     private readonly transactions: TransactionRunner,
     private readonly clock: Clock,
+    private readonly log: ActivityLog,
   ) {}
 
   /** Using the code and becoming a member happen together or not at all. */
@@ -143,6 +145,7 @@ export class JoinHousehold {
         throw new InvalidInviteError();
       }
       await this.households.save(household);
+      await this.log.record({ householdId: household.id, type: 'member-joined', actorId });
       return household;
     });
   }

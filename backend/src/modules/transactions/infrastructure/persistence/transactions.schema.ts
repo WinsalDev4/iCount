@@ -13,7 +13,7 @@ import {
 import { usersTable } from '../../../auth/infrastructure/persistence/auth.schema.js';
 import { categoriesTable } from '../../../categories/infrastructure/persistence/categories.schema.js';
 import { householdsTable } from '../../../households/infrastructure/persistence/households.schema.js';
-import type { TransactionType } from '../../domain/transaction.js';
+import type { ApprovalStatus, TransactionType } from '../../domain/transaction.js';
 
 export const transactionsTable = pgTable(
   'transactions',
@@ -36,6 +36,8 @@ export const transactionsTable = pgTable(
       .notNull()
       .references(() => usersTable.id),
     shared: boolean('shared').notNull(),
+    /** ADR-0016: null = no approval needed; only null/approved count in balances. */
+    approvalStatus: varchar('approval_status', { length: 8 }).$type<ApprovalStatus>(),
     createdBy: uuid('created_by')
       .notNull()
       .references(() => usersTable.id),
@@ -52,6 +54,23 @@ export const transactionsTable = pgTable(
       table.id.desc(),
     ),
   ],
+);
+
+/** Decisions of the members on a shared movement (the current approval round). */
+export const transactionApprovalsTable = pgTable(
+  'transaction_approvals',
+  {
+    transactionId: uuid('transaction_id')
+      .notNull()
+      .references(() => transactionsTable.id, { onDelete: 'cascade' }),
+    memberId: uuid('member_id')
+      .notNull()
+      .references(() => usersTable.id),
+    decision: varchar('decision', { length: 8 }).$type<'approve' | 'reject'>().notNull(),
+    reason: varchar('reason', { length: 140 }),
+    decidedAt: timestamp('decided_at', { withTimezone: true }).notNull(),
+  },
+  (table) => [primaryKey({ columns: [table.transactionId, table.memberId] })],
 );
 
 export const transactionSharesTable = pgTable(

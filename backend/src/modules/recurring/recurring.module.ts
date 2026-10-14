@@ -6,6 +6,7 @@ import { TODAY } from '../../shared/application/today.js';
 import { TransactionRunner } from '../../shared/application/transaction-runner.js';
 import { CategoriesModule } from '../categories/categories.module.js';
 import { CategoryRepository } from '../categories/domain/category.js';
+import { ActivityLog } from '../activity/domain/activity.js';
 import { DebtsModule } from '../debts/debts.module.js';
 import { DebtRepository } from '../debts/domain/debt.js';
 import { HouseholdAccess } from '../households/application/household-access.js';
@@ -68,6 +69,7 @@ import { RecurringController } from './interface/http/recurring.controller.js';
         Clock,
         IdGenerator,
         DebtRepository,
+        ActivityLog,
       ],
       useFactory: (...deps: ConstructorParameters<typeof MaterializeDueRecurringPayments>) =>
         new MaterializeDueRecurringPayments(...deps),

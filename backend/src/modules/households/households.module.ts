@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { Clock } from '../../shared/application/clock.js';
 import { IdGenerator } from '../../shared/application/id-generator.js';
 import { TransactionRunner } from '../../shared/application/transaction-runner.js';
+import { ActivityLog } from '../activity/domain/activity.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { UserRepository } from '../auth/domain/user.js';
 import {
@@ -62,7 +63,14 @@ import { HouseholdsController } from './interface/http/households.controller.js'
     },
     {
       provide: JoinHousehold,
-      inject: [HouseholdRepository, InvitationRepository, UserRepository, TransactionRunner, Clock],
+      inject: [
+        HouseholdRepository,
+        InvitationRepository,
+        UserRepository,
+        TransactionRunner,
+        Clock,
+        ActivityLog,
+      ],
       useFactory: (...deps: ConstructorParameters<typeof JoinHousehold>) =>
         new JoinHousehold(...deps),
     },

@@ -50,6 +50,13 @@
       "when": 1791936294444,
       "tag": "0006_debts",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791937272568,
+      "tag": "0007_shared_household",
+      "breakpoints": true
     }
   ]
 }

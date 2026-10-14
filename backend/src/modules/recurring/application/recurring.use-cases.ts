@@ -10,6 +10,7 @@ import {
   type CategoryRepository,
   UnknownCategoryError,
 } from '../../categories/domain/category.js';
+import type { ActivityLog } from '../../activity/domain/activity.js';
 import { type DebtRepository, InvalidDebtPaymentError } from '../../debts/domain/debt.js';
 import type { HouseholdAccess } from '../../households/application/household-access.js';
 import type { HouseholdRepository } from '../../households/domain/household.js';
@@ -223,6 +224,7 @@ export class MaterializeDueRecurringPayments {
     private readonly clock: Clock,
     private readonly ids: IdGenerator,
     private readonly debts: DebtRepository,
+    private readonly log: ActivityLog,
   ) {}
 
   async execute(today: string): Promise<{ created: number }> {
@@ -240,21 +242,29 @@ export class MaterializeDueRecurringPayments {
           const transactionId = this.ids.next();
           if (await this.payments.claimOccurrence(payment.id, next)) {
             const p = payment.snapshot;
-            await this.transactions.save(
-              Transaction.create(household, {
-                id: transactionId,
-                type: p.type,
-                amountMinor: p.amountMinor,
-                currency: p.currency,
-                categoryId: p.categoryId,
-                description: p.name,
-                occurredOn: next,
-                payerId: household.isMember(p.payerId) ? p.payerId : p.createdBy,
-                shared: p.shared && household.kind === 'shared',
-                createdBy: p.createdBy,
-                now: this.clock.now(),
-              }),
-            );
+            const transaction = Transaction.create(household, {
+              id: transactionId,
+              type: p.type,
+              amountMinor: p.amountMinor,
+              currency: p.currency,
+              categoryId: p.categoryId,
+              description: p.name,
+              occurredOn: next,
+              payerId: household.isMember(p.payerId) ? p.payerId : p.createdBy,
+              shared: p.shared && household.kind === 'shared',
+              createdBy: p.createdBy,
+              now: this.clock.now(),
+            });
+            await this.transactions.save(transaction);
+            await this.log.record({
+              householdId: household.id,
+              type: 'transaction-created',
+              actorId: p.createdBy,
+              transactionId,
+              amountMinor: p.amountMinor,
+              currency: p.currency,
+              description: p.name,
+            });
             await this.payments.linkOccurrence(payment.id, next, transactionId);
             // A loan instalment counts as a payment of its debt straight away.
             if (p.debtId !== null && p.type === 'expense') {

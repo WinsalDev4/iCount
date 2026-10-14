@@ -24,10 +24,15 @@ import {
   TransactionRepository,
 } from '../../domain/transaction-repository.js';
 import { Transaction } from '../../domain/transaction.js';
-import { transactionSharesTable, transactionsTable } from './transactions.schema.js';
+import {
+  transactionApprovalsTable,
+  transactionSharesTable,
+  transactionsTable,
+} from './transactions.schema.js';
 
 const t = transactionsTable;
 const s = transactionSharesTable;
+const v = transactionApprovalsTable;
 
 @Injectable()
 export class DrizzleTransactionRepository extends TransactionRepository {
@@ -45,7 +50,7 @@ export class DrizzleTransactionRepository extends TransactionRepository {
   save(transaction: Transaction): Promise<void> {
     return this.context.run(async () => {
       const db = this.context.db;
-      const { shares, ...row } = transaction.snapshot;
+      const { shares, approvals, ...row } = transaction.snapshot;
       await db
         .insert(t)
         .values(row)
@@ -59,6 +64,7 @@ export class DrizzleTransactionRepository extends TransactionRepository {
             occurredOn: row.occurredOn,
             payerId: row.payerId,
             shared: row.shared,
+            approvalStatus: row.approvalStatus,
             updatedAt: row.updatedAt,
           },
         });
@@ -66,6 +72,10 @@ export class DrizzleTransactionRepository extends TransactionRepository {
       await db.delete(s).where(eq(s.transactionId, row.id));
       if (shares.length > 0) {
         await db.insert(s).values(shares.map((share) => ({ transactionId: row.id, ...share })));
+      }
+      await db.delete(v).where(eq(v.transactionId, row.id));
+      if (approvals.length > 0) {
+        await db.insert(v).values(approvals.map((vote) => ({ transactionId: row.id, ...vote })));
       }
     });
   }
@@ -170,24 +180,32 @@ export class DrizzleTransactionRepository extends TransactionRepository {
       .orderBy(asc(t.occurredOn));
   }
 
-  /** One query for every share of the page (no N+1). */
+  /** One query for every share and one for every approval of the page (no N+1). */
   private async withShares(rows: (typeof t.$inferSelect)[]): Promise<Transaction[]> {
     if (rows.length === 0) return [];
-    const shares = await this.context.db
-      .select()
-      .from(s)
-      .where(
-        inArray(
-          s.transactionId,
-          rows.map((row) => row.id),
-        ),
-      );
+    const ids = rows.map((row) => row.id);
+    const [shares, votes] = await Promise.all([
+      this.context.db.select().from(s).where(inArray(s.transactionId, ids)),
+      this.context.db
+        .select()
+        .from(v)
+        .where(inArray(v.transactionId, ids))
+        .orderBy(asc(v.decidedAt)),
+    ]);
     return rows.map((row) =>
       Transaction.restore({
         ...row,
         shares: shares
           .filter((share) => share.transactionId === row.id)
           .map((share) => ({ memberId: share.memberId, amountMinor: share.amountMinor })),
+        approvals: votes
+          .filter((vote) => vote.transactionId === row.id)
+          .map(({ memberId, decision, reason, decidedAt }) => ({
+            memberId,
+            decision,
+            reason,
+            decidedAt,
+          })),
       }),
     );
   }

@@ -10,6 +10,17 @@ export interface ShareAmount {
   readonly amountMinor: number;
 }
 
+/** ADR-0016: null when no approval is needed (not shared, or nobody else takes part). */
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+
+export interface ApprovalVote {
+  readonly memberId: string;
+  readonly decision: 'approve' | 'reject';
+  /** Required when rejecting. */
+  readonly reason: string | null;
+  readonly decidedAt: Date;
+}
+
 export interface TransactionProps {
   readonly id: string;
   readonly householdId: string;
@@ -25,6 +36,10 @@ export interface TransactionProps {
   readonly shared: boolean;
   /** Empty when not shared; otherwise they add up to `amountMinor`. */
   readonly shares: readonly ShareAmount[];
+  /** Only counts in balances when null or approved. */
+  readonly approvalStatus: ApprovalStatus | null;
+  /** Decisions of the current round; an edit starts a new one. */
+  readonly approvals: readonly ApprovalVote[];
   readonly createdBy: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
@@ -52,6 +67,8 @@ export class Transaction {
       ...fields,
       householdId: household.id,
       shares: [],
+      approvalStatus: null,
+      approvals: [],
       createdAt: fields.now,
       updatedAt: fields.now,
     });
@@ -85,6 +102,48 @@ export class Transaction {
     this.applyRules(household);
   }
 
+  /**
+   * Members who must approve it: everyone with a share except its author
+   * (nobody approves their own movements).
+   */
+  get approvers(): string[] {
+    return this.props.shares
+      .map((share) => share.memberId)
+      .filter((memberId) => memberId !== this.props.createdBy);
+  }
+
+  /** Whether it counts in balances (ADR-0016). */
+  get counts(): boolean {
+    return this.props.approvalStatus === null || this.props.approvalStatus === 'approved';
+  }
+
+  /** One member approves or rejects it; the movement is approved when every approver agrees. */
+  decide(memberId: string, decision: 'approve' | 'reject', reason: string | null, now: Date): void {
+    if (memberId === this.props.createdBy) throw new CannotApproveOwnError();
+    if (!this.approvers.includes(memberId)) throw new NotAnApproverError();
+    if (
+      this.props.approvalStatus !== 'pending' ||
+      this.props.approvals.some((vote) => vote.memberId === memberId)
+    ) {
+      throw new AlreadyDecidedError();
+    }
+    if (decision === 'reject' && !reason?.trim()) {
+      throw new InvalidTransactionError('Explain why you reject it.');
+    }
+    const approvals = [
+      ...this.props.approvals,
+      { memberId, decision, reason: decision === 'reject' ? reason!.trim() : null, decidedAt: now },
+    ];
+    const approved = this.approvers.every((approver) =>
+      approvals.some((vote) => vote.memberId === approver && vote.decision === 'approve'),
+    );
+    this.props = {
+      ...this.props,
+      approvals,
+      approvalStatus: decision === 'reject' ? 'rejected' : approved ? 'approved' : 'pending',
+    };
+  }
+
   private applyRules(household: Household): void {
     const { amountMinor, payerId, shared, description } = this.props;
     if (!Number.isSafeInteger(amountMinor) || amountMinor <= 0) {
@@ -110,6 +169,12 @@ export class Transaction {
             categoryId: this.props.categoryId,
           }).map(({ memberId, amountMinor: part }) => ({ memberId, amountMinor: part }))
         : [],
+    };
+    // Every change to a shared movement goes back to the others for approval.
+    this.props = {
+      ...this.props,
+      approvals: [],
+      approvalStatus: this.approvers.length > 0 ? 'pending' : null,
     };
   }
 }
@@ -152,6 +217,36 @@ export class NotSharedHouseholdError extends DomainError {
 
   constructor() {
     super('Only movements of shared households can be split between members.');
+  }
+}
+
+export class CannotApproveOwnError extends DomainError {
+  readonly kind = 'invalid';
+  readonly code = 'cannot-approve-own';
+  readonly title = 'You cannot approve your own movement';
+
+  constructor() {
+    super('The other members approve the shared movements you add.');
+  }
+}
+
+export class NotAnApproverError extends DomainError {
+  readonly kind = 'forbidden';
+  readonly code = 'not-an-approver';
+  readonly title = 'This movement does not need your approval';
+
+  constructor() {
+    super('Only the members who take part in a shared movement approve it.');
+  }
+}
+
+export class AlreadyDecidedError extends DomainError {
+  readonly kind = 'conflict';
+  readonly code = 'already-decided';
+  readonly title = 'Already decided';
+
+  constructor() {
+    super('This movement is no longer waiting for your decision.');
   }
 }
 
