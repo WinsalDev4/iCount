@@ -84,7 +84,7 @@ Casos de uso necesarios contra el puerto ampliado. Tests (cálculo de intensidad
 
 ---
 
-## [ ] 3.9 · Integración y cierre — Opus, en solitario
+## [x] 3.9 · Integración y cierre — Opus, en solitario
 - **Hecho cuando:** los módulos usan la API en modo `api`; la caché sobrevive al reinicio de la app; la actualización optimista se ve al instante y se revierte si falla (probado apagando el backend); fase 3 → ✅; release `0.3.0`.
 - **Prompt:**
 ```

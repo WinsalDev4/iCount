@@ -97,7 +97,7 @@ Casos de uso CreateHousehold, CreateInvite, JoinHousehold y SetSplitRule contra 
 
 ---
 
-## [ ] 2.9 · Integración y cierre — Opus, en solitario
+## [x] 2.9 · Integración y cierre — Opus, en solitario
 - **Depende de:** todas las tareas de la fase 2
 - **Hecho cuando:** los módulos auth y household usan la implementación de API si `dataSource === 'api'`; flujo completo probado en el emulador (onboarding → email en Mailpit → deep link → crear hogar → invitar → unirse desde un segundo usuario); fase 2 → ✅; release `0.2.0`.
 - **Prompt:**

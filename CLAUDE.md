@@ -20,7 +20,7 @@ Antes de tocar APIs de Expo, lee `mobile/AGENTS.md`: consulta la doc versionada,
 | Auth | Enlace mágico + JWT 15 min + refresh rotatorio; biometría solo local | 0013 |
 
 ## Estado
-Fase 1 cerrada (release **0.1.0**): monorepo, backend base, contratos, red, design system y navegación. Fase 2 en curso: 2.0 hecha (ADR-0013, contratos y puertos de auth/household); siguen A-2.x y B-2.x en paralelo.
+Fases 1–3 cerradas (releases **0.1.0**, **0.2.0** y **0.3.0**): monorepo y backend base; login sin contraseña y hogares; movimientos con caché persistida y altas optimistas, probadas en el emulador contra la API real (`EXPO_PUBLIC_DATA_SOURCE=api`, ver `docs/architecture/integracion-api.md`). Preparación global G.0 hecha (3.0–7.0; de la 6.0 falta lo que necesita al usuario). Backend de las fases 4, 5 y 7 hecho (pista A); sus cierres 4.9, 5.9 y 7.9 esperan a la pista B.
 
 ## Plan de desarrollo
 - Plan completo por fases: `docs/plan/README.md` (estado) y `docs/plan/fase-*.md` (tareas con prompt).

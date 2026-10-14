@@ -12,13 +12,15 @@ Implementación de [ADR-0014](../adr/0014-cache-persistida-y-optimistas.md): la 
 
 ## Caché persistida
 - **MMKV** guarda la caché serializada bajo `icount.query-cache.v1`. Es **síncrono**: al arrancar, la caché está disponible antes del primer *render*, sin estado intermedio de "cargando". La instancia se crea en el primer uso, así que importar el módulo no toca código nativo (tests, web).
-- `createPersistOptions(storage)` devuelve las opciones de `<PersistQueryClientProvider>` (se conecta en la 3.9):
-  - persiste **solo** las consultas en estado `success` (no errores ni cargas a medias);
+- `createPersistOptions(storage)` devuelve las opciones de `<PersistQueryClientProvider>`, conectado en el layout raíz en la 3.9:
+  - persiste **toda consulta con datos**, también si su último refresco falló (sin red, un fallo no debe borrar de disco lo que el usuario puede ver); las cargas a medias no se guardan;
+  - **serialización con tipos** (`cacheSerialization.ts`): `Money`, `Date` y `Map` se guardan etiquetados y se reviven al restaurar (con JSON plano, `Money` volvía sin `format()`);
   - una consulta puede excluirse con `meta: { persist: false }`;
   - `maxAge` de 7 días: más antigua, se descarta;
   - `buster` ligado a `API_VERSION`: si cambia el contrato, la caché vieja no se reutiliza con formas antiguas;
   - las escrituras se agrupan (como mucho una por segundo).
-- `clearPersistedQueryCache(storage)` **al cerrar sesión**: la caché contiene datos financieros del usuario anterior.
+- `clearPersistedQueryCache(storage)` **al cerrar sesión** (desde `endSession`): la caché contiene datos financieros del usuario anterior.
+- Lo que se aprendió al probarlo en el emulador está en [integracion-api.md](integracion-api.md).
 
 ## Query keys
 Las claves son arrays jerárquicos, y TanStack invalida **por prefijo**:
