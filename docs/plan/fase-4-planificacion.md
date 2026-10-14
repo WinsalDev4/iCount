@@ -35,7 +35,7 @@ Implementa @icount/finance (TS puro, céntimos enteros, redondeo explícito y do
 Tests contra cuadros de referencia calculados (incluye el caso del lienzo: coche 8.640 € al 6,9% con 320 €/mes y +100 €/mes). Explica fórmulas y decisiones en docs/architecture/motor-financiero.md.
 ```
 
-### [ ] A-4.2 · Backend: presupuestos y pagos recurrentes
+### [x] A-4.2 · Backend: presupuestos y pagos recurrentes
 - **Rama:** `feature/a-4.2-backend-presupuestos-recurrentes` · **Depende de:** A-4.1
 - **Ficheros exclusivos:** `backend/**`, `docs/backend/planificacion.md`
 - **Hecho cuando:** presupuestos por categoría y mes, con gasto acumulado calculado; pagos recurrentes (mensual, anual, cada N meses, día del mes con ajuste a fin de mes); tarea programada idempotente que materializa los movimientos y los vencimientos próximos; tests.
