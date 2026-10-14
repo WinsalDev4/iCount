@@ -95,7 +95,13 @@ export class DrizzleTransactionRepository extends TransactionRepository {
               this.context.db
                 .select({ one: sql`1` })
                 .from(s)
-                .where(and(eq(s.transactionId, t.id), eq(s.memberId, filters.memberId))),
+                // Qualified on purpose: Drizzle renders subquery columns unqualified.
+                .where(
+                  and(
+                    sql`${s.transactionId} = "transactions"."id"`,
+                    eq(s.memberId, filters.memberId),
+                  ),
+                ),
             ),
           )
         : undefined,
