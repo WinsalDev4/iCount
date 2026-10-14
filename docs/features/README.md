@@ -21,3 +21,4 @@ Rama: feature/<nombre> · Estado: en curso | hecho
 | [Acceso sin contraseña y rutas protegidas](acceso.md) | Hecho (sin comprobación en dispositivo) |
 | [Configuración del hogar](hogar-setup.md) | Hecho (sin comprobación en dispositivo) |
 | [Añadir movimiento](anadir-movimiento.md) | Hecho (sin comprobación en dispositivo) |
+| [Inicio](inicio.md) | Hecho (sin comprobación en dispositivo) |

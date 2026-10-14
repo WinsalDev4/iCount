@@ -60,7 +60,7 @@ Implementa "Añadir movimiento" (pantalla 05, maquetación A "teclado propio") c
 Dominio: parseAmountInput (string es-ES → céntimos enteros; tests exhaustivos de bordes) y caso de uso CreateTransaction con validaciones. ViewModel con useMutation (si el helper optimista de A-3.2 ya está en develop, úsalo). Amplía InMemoryTransactionRepository. Tests. docs/features/anadir-movimiento.md.
 ```
 
-### [ ] B-3.2 · Inicio (04-C)
+### [x] B-3.2 · Inicio (04-C)
 - **Rama:** `feature/b-3.2-inicio` · **Depende de:** B-3.1
 - **Ficheros exclusivos:** `mobile/src/features/transactions/presentation/home/**`, `mobile/src/features/transactions/domain/usecases/**`, `docs/features/inicio.md`
 - **Hecho cuando:** sustituye a la pantalla de referencia; caso de uso `GetDailyAllowance` (saldo disponible / días restantes, incluido hoy; bordes: último día del mes, saldo negativo, febrero), barras de la semana, cabecera del hogar con avatares; la sección de presupuestos queda oculta hasta la fase 4; tests.

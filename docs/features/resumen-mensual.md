@@ -1,6 +1,6 @@
 # Feature: Resumen mensual (slice de referencia)
 
-Rama: `feature/project-setup` · Estado: hecho (datos en memoria, UI provisional)
+Rama: `feature/project-setup` · Estado: hecho — la pantalla se sustituyó por [Inicio](inicio.md); el caso de uso y el patrón siguen vigentes
 
 ## Qué hace
 Muestra el balance del mes (ingresos − gastos) de una economía (`householdId`) y el gasto por categoría ordenado de mayor a menor.
