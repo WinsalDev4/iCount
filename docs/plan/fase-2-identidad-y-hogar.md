@@ -73,7 +73,7 @@ Implementa la feature onboarding (pantalla 01, maquetación B "cifra protagonist
 MVVM: useOnboardingViewModel + vista; rutas en src/app/(onboarding). Tests del ViewModel. docs/features/onboarding.md.
 ```
 
-### [ ] B-2.2 · Acceso sin contraseña (02-C) y protección de rutas
+### [x] B-2.2 · Acceso sin contraseña (02-C) y protección de rutas
 - **Rama:** `feature/b-2.2-acceso` · **Depende de:** B-2.1
 - **Ficheros exclusivos:** `mobile/src/features/auth/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/auth/auth.module.ts`, `mobile/src/app/(auth)/**`, `mobile/src/app/_layout.tsx`, `docs/features/acceso.md`
 - **Hecho cuando:** casos de uso `RequestMagicLink`, `VerifyMagicLink`, `SignOut` y `GetSession`; `InMemoryAuthRepository` (en modo memoria acepta cualquier token); pantallas de email, "revisa tu correo" y la ruta `auth/verify` del deep link; interruptor de biometría; protección de rutas onboarding → auth → app con la API de rutas protegidas de Expo Router; tests.

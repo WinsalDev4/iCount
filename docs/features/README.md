@@ -18,3 +18,4 @@ Rama: feature/<nombre> · Estado: en curso | hecho
 | [Design system Midnight Glass](design-system.md) | Hecho (sin comprobación visual en dispositivo) |
 | [Navegación por pestañas](navegacion.md) | Hecho (pantallas provisionales) |
 | [Onboarding](onboarding.md) | Hecho (sin comprobación visual en dispositivo) |
+| [Acceso sin contraseña y rutas protegidas](acceso.md) | Hecho (sin comprobación en dispositivo) |
