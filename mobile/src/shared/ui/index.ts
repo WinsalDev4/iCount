@@ -17,6 +17,8 @@ export {
   type SegmentedOption,
 } from './SegmentedControl';
 export { SwitchRow, type SwitchRowProps } from './SwitchRow';
+export { ExpandableCard, type ExpandableCardProps } from './ExpandableCard';
+export { OptionCard, type OptionCardProps } from './OptionCard';
 export { TabBar, type TabBarItem, type TabBarProps } from './TabBar';
 export { TextField, type TextFieldProps } from './TextField';
 export { theme } from './theme';
