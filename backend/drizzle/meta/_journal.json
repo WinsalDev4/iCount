@@ -36,6 +36,13 @@
       "when": 1791934737107,
       "tag": "0004_seed_categories",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791935780751,
+      "tag": "0005_budgets_recurring",
+      "breakpoints": true
     }
   ]
 }

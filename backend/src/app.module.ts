@@ -1,11 +1,14 @@
 import { type DynamicModule, Module } from '@nestjs/common';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AuthModule } from './modules/auth/auth.module.js';
+import { BudgetsModule } from './modules/budgets/budgets.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { HouseholdsModule } from './modules/households/households.module.js';
 import { NotesModule } from './modules/notes/notes.module.js';
+import { RecurringModule } from './modules/recurring/recurring.module.js';
 import { TransactionsModule } from './modules/transactions/transactions.module.js';
 import { SharedKernelModule } from './shared/application/shared-kernel.module.js';
 import { AuthCoreModule } from './shared/auth/auth-core.module.js';
@@ -30,6 +33,8 @@ export class AppModule {
       HouseholdsModule,
       CategoriesModule,
       TransactionsModule,
+      BudgetsModule,
+      RecurringModule,
       // The template module is a reference for new modules, not a product feature.
       ...(config.nodeEnv === 'production' ? [] : [NotesModule]),
     ];
@@ -43,6 +48,8 @@ export class AppModule {
         SharedKernelModule,
         AuthCoreModule,
         EmailModule,
+        // Cron jobs (recurring payments). Not started in tests: they call the jobs directly.
+        ...(config.nodeEnv === 'test' ? [] : [ScheduleModule.forRoot()]),
         ...featureModules,
       ],
       providers: [
