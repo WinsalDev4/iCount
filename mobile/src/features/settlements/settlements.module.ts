@@ -1,21 +1,36 @@
 import type { DataSource } from '@/core/config/env';
 import { notImplemented } from '@/core/di/notImplemented';
+import { sharedMemoryHouseholdLedger } from '@/features/household/data/sharedMemoryHousehold';
 
+import { InMemorySettlementRepository } from './data/InMemorySettlementRepository';
 import type { SettlementRepository } from './domain/SettlementRepository';
+import {
+  CreateSettlement,
+  GetBalance,
+  ListSettlements,
+} from './domain/usecases/SettlementUseCases';
 
 export interface SettlementsModuleConfig {
   readonly dataSource: DataSource;
 }
 
 /**
- * Stub from the global preparation (G.0, phase 5) so the container already
- * composes it. Phase 5 tasks fill in the in-memory and API implementations.
+ * Feature module: repository → use cases. In `memory` the balance is computed from the shared
+ * in-memory household. The `api` source is chosen in the 5.9 integration.
  */
 export function createSettlementsModule(config: SettlementsModuleConfig) {
+  const repository: SettlementRepository =
+    config.dataSource === 'memory'
+      ? new InMemorySettlementRepository(sharedMemoryHouseholdLedger())
+      : notImplemented<SettlementRepository>(
+          `settlements(${config.dataSource}).settlementRepository`,
+        );
+
   return {
-    settlementRepository: notImplemented<SettlementRepository>(
-      `settlements(${config.dataSource}).settlementRepository`,
-    ),
+    settlementRepository: repository,
+    getBalance: new GetBalance(repository),
+    listSettlements: new ListSettlements(repository),
+    createSettlement: new CreateSettlement(repository),
   };
 }
 

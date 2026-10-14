@@ -1,7 +1,7 @@
 import { type FeatureContext, requireApi } from '@/core/di/FeatureContext';
 
 import { ApiHouseholdRepository } from './data/api/ApiHouseholdRepository';
-import { InMemoryHouseholdRepository } from './data/InMemoryHouseholdRepository';
+import { sharedMemoryHouseholdRepository } from './data/sharedMemoryHousehold';
 import type { HouseholdRepository } from './domain/HouseholdRepository';
 import { CreateHousehold } from './domain/usecases/CreateHousehold';
 import { CreateInvite } from './domain/usecases/CreateInvite';
@@ -17,7 +17,7 @@ import { SetSplitRule } from './domain/usecases/SetSplitRule';
 export function createHouseholdModule(context: FeatureContext) {
   const repository: HouseholdRepository =
     context.dataSource === 'memory'
-      ? new InMemoryHouseholdRepository()
+      ? sharedMemoryHouseholdRepository()
       : new ApiHouseholdRepository(requireApi(context, 'household').http);
 
   return {
