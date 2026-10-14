@@ -348,6 +348,27 @@ describe('navigation', () => {
     expect(screen.getByRole('tab', { name: 'Planificar' })).toBeSelected();
   });
 
+  it('Planificar leads to the debts list, a debt and the strategy', async () => {
+    await renderApp({ initialUrl: '/plan' });
+    await fireEvent.press(screen.getByRole('button', { name: 'Deudas' }));
+    await settle();
+    await settle();
+    expect(screen.getByRole('header', { name: 'Deudas' })).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Avalancha o bola de nieve' }));
+    await settle();
+    expect(screen.getByText('¿Por cuál empiezo?')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Volver' }));
+    await settle();
+    await fireEvent.press(screen.getByRole('button', { name: /^Préstamo del coche,/ }));
+    await settle();
+    expect(screen.getByText('¿Y SI PAGAS DE MÁS CADA MES?')).toBeOnTheScreen();
+  });
+
+  it('keeps a signed-out user out of the debts deep link', async () => {
+    await renderApp({ session: null, initialUrl: '/debts' });
+    expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();
+  });
+
   it('keeps a signed-out user out of the budgets deep link', async () => {
     await renderApp({ session: null, initialUrl: '/budgets' });
     expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();

@@ -26,7 +26,7 @@ const entries: readonly PlanEntry[] = [
     title: 'Deudas',
     description: 'Cuánto debes, cuándo acabas y cuánto ahorras pagando extra.',
     icon: 'list',
-    href: null,
+    href: '/debts',
   },
   {
     title: 'Recurrentes',

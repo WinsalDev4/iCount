@@ -170,15 +170,18 @@ describe('BudgetsScreen', () => {
 });
 
 describe('PlanHubScreen', () => {
-  it('opens budgets and shows the other tools as coming soon', async () => {
+  it('opens budgets and debts, and shows recurring payments as coming soon', async () => {
     await render(wrap(<PlanHubScreen />));
     await fireEvent.press(screen.getByRole('button', { name: 'Presupuestos' }));
     expect(mockPush).toHaveBeenCalledWith('/budgets');
 
-    const debts = screen.getByRole('button', { name: 'Deudas' });
-    expect(debts).toBeDisabled();
-    await fireEvent.press(debts);
-    expect(mockPush).toHaveBeenCalledTimes(1);
-    expect(screen.getAllByText('Próximamente')).toHaveLength(2);
+    await fireEvent.press(screen.getByRole('button', { name: 'Deudas' }));
+    expect(mockPush).toHaveBeenCalledWith('/debts');
+
+    const recurring = screen.getByRole('button', { name: 'Recurrentes' });
+    expect(recurring).toBeDisabled();
+    await fireEvent.press(recurring);
+    expect(mockPush).toHaveBeenCalledTimes(2);
+    expect(screen.getAllByText('Próximamente')).toHaveLength(1);
   });
 });

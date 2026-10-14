@@ -86,6 +86,7 @@ function AccessStack() {
         <Stack.Screen name="add" options={{ presentation: 'modal' }} />
         <Stack.Screen name="transaction/[id]" />
         <Stack.Screen name="budgets" />
+        <Stack.Screen name="debts" />
         <Stack.Screen name="dev/catalog" />
       </Stack.Protected>
     </Stack>
