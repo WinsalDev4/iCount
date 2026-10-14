@@ -48,7 +48,7 @@ Push de punta a punta: en la app core/notifications (permiso en contexto, regist
 
 ## Pista B · Sonnet
 
-### [ ] B-5.1 · Hogar: actividad y balance (09-C)
+### [x] B-5.1 · Hogar: actividad y balance (09-C)
 - **Rama:** `feature/b-5.1-hogar` · **Depende de:** 5.0
 - **Ficheros exclusivos:** `mobile/src/features/{activity,settlements}/{domain/usecases,data/InMemory*,presentation}/**`, sus `*.module.ts`, `mobile/src/app/(tabs)/household*`, `docs/features/hogar.md`
 - **Hecho cuando:** pestaña Hogar con cabecera de balance ("Leo debe a Ana…"), feed de actividad con filtro "por revisar", aprobar y comentar, y gestión de miembros (invitar, ver ingresos y regla de reparto); tests.

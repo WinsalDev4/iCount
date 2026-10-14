@@ -26,3 +26,4 @@ Rama: feature/<nombre> · Estado: en curso | hecho
 | [Planificar y presupuestos](presupuestos.md) | Hecho (sin comprobación en dispositivo) |
 | [Deudas](deudas.md) | Hecho (sin comprobación en dispositivo) |
 | [Pagos recurrentes](recurrentes.md) | Hecho (sin comprobación en dispositivo) |
+| [Hogar: balance, actividad y miembros](hogar.md) | Hecho (sin comprobación en dispositivo) |
