@@ -43,6 +43,13 @@
       "when": 1791935780751,
       "tag": "0005_budgets_recurring",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791936294444,
+      "tag": "0006_debts",
+      "breakpoints": true
     }
   ]
 }

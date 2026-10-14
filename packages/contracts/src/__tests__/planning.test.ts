@@ -102,6 +102,16 @@ describe('debts', () => {
         debtFreeDate: '2028-03-05',
       }).success,
     ).toBe(true);
+    // Nothing to pay: already debt free.
+    expect(
+      payoffStrategyResultDtoSchema.safeParse({
+        strategy: 'avalanche',
+        extraMonthly: eur(0),
+        debts: [],
+        totalInterest: eur(0),
+        debtFreeDate: null,
+      }).success,
+    ).toBe(true);
   });
 });
 

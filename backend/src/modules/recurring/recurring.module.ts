@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 
 import { Clock } from '../../shared/application/clock.js';
 import { IdGenerator } from '../../shared/application/id-generator.js';
+import { TODAY } from '../../shared/application/today.js';
 import { TransactionRunner } from '../../shared/application/transaction-runner.js';
 import { CategoriesModule } from '../categories/categories.module.js';
 import { CategoryRepository } from '../categories/domain/category.js';
+import { DebtsModule } from '../debts/debts.module.js';
+import { DebtRepository } from '../debts/domain/debt.js';
 import { HouseholdAccess } from '../households/application/household-access.js';
 import { HouseholdRepository } from '../households/domain/household.js';
 import { HouseholdsModule } from '../households/households.module.js';
@@ -16,21 +19,19 @@ import {
   ListRecurringPayments,
   ListUpcomingDues,
   MaterializeDueRecurringPayments,
-  todayIn,
   UpdateRecurringPayment,
 } from './application/recurring.use-cases.js';
 import { RecurringPaymentRepository } from './domain/recurring-payment.js';
 import { DrizzleRecurringPaymentRepository } from './infrastructure/persistence/drizzle-recurring.repository.js';
-import { RecurringScheduler, TODAY } from './infrastructure/recurring.scheduler.js';
+import { RecurringScheduler } from './infrastructure/recurring.scheduler.js';
 import { RecurringController } from './interface/http/recurring.controller.js';
 
 /** Recurring payments, upcoming dues and the daily job that turns them into movements. */
 @Module({
-  imports: [HouseholdsModule, CategoriesModule, TransactionsModule],
+  imports: [HouseholdsModule, CategoriesModule, TransactionsModule, DebtsModule],
   controllers: [RecurringController],
   providers: [
     { provide: RecurringPaymentRepository, useClass: DrizzleRecurringPaymentRepository },
-    { provide: TODAY, inject: [Clock], useFactory: (clock: Clock) => todayIn(clock) },
     {
       provide: CreateRecurringPayment,
       inject: [
@@ -40,6 +41,7 @@ import { RecurringController } from './interface/http/recurring.controller.js';
         Clock,
         IdGenerator,
         TODAY,
+        DebtRepository,
       ],
       useFactory: (...deps: ConstructorParameters<typeof CreateRecurringPayment>) =>
         new CreateRecurringPayment(...deps),
@@ -65,6 +67,7 @@ import { RecurringController } from './interface/http/recurring.controller.js';
         TransactionRunner,
         Clock,
         IdGenerator,
+        DebtRepository,
       ],
       useFactory: (...deps: ConstructorParameters<typeof MaterializeDueRecurringPayments>) =>
         new MaterializeDueRecurringPayments(...deps),

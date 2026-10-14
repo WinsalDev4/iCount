@@ -2,6 +2,7 @@ import { compareLocalDates, occurrencesBetween } from '@icount/finance';
 
 import type { Clock } from '../../../shared/application/clock.js';
 import type { IdGenerator } from '../../../shared/application/id-generator.js';
+import type { Today } from '../../../shared/application/today.js';
 import type { TransactionRunner } from '../../../shared/application/transaction-runner.js';
 import {
   acceptsType,
@@ -9,6 +10,7 @@ import {
   type CategoryRepository,
   UnknownCategoryError,
 } from '../../categories/domain/category.js';
+import { type DebtRepository, InvalidDebtPaymentError } from '../../debts/domain/debt.js';
 import type { HouseholdAccess } from '../../households/application/household-access.js';
 import type { HouseholdRepository } from '../../households/domain/household.js';
 import { CurrencyMismatchError } from '../../households/domain/households.errors.js';
@@ -22,14 +24,6 @@ import {
   type RecurringPaymentRepository,
 } from '../domain/recurring-payment.js';
 
-/** Today as a calendar day in the household's time zone (Spain for now). */
-export type Today = () => string;
-
-export function todayIn(clock: Clock, timeZone = 'Europe/Madrid'): Today {
-  // en-CA formats dates as YYYY-MM-DD.
-  return () => new Intl.DateTimeFormat('en-CA', { timeZone }).format(clock.now());
-}
-
 async function assertCategory(
   categories: CategoryRepository,
   householdId: string,
@@ -39,6 +33,22 @@ async function assertCategory(
   const category = await categories.findAvailable(householdId, categoryId);
   if (!category) throw new UnknownCategoryError(categoryId);
   if (!acceptsType(category, type)) throw new CategoryTypeMismatchError(categoryId, type);
+}
+
+/** A recurring instalment can only pay an expense debt of the same household. */
+async function assertDebt(
+  debts: DebtRepository,
+  householdId: string,
+  debtId: string,
+  type: 'income' | 'expense',
+): Promise<void> {
+  const debt = await debts.findById(debtId);
+  if (!debt || debt.snapshot.householdId !== householdId) {
+    throw new InvalidDebtPaymentError('The debt does not exist in this household.');
+  }
+  if (type !== 'expense') {
+    throw new InvalidDebtPaymentError('Only expenses pay debts.');
+  }
 }
 
 async function loadForMember(
@@ -91,6 +101,7 @@ export class CreateRecurringPayment {
     private readonly clock: Clock,
     private readonly ids: IdGenerator,
     private readonly today: Today,
+    private readonly debts: DebtRepository,
   ) {}
 
   async execute(actorId: string, householdId: string, input: NewRecurringPayment) {
@@ -99,6 +110,9 @@ export class CreateRecurringPayment {
       throw new CurrencyMismatchError(household.currency, input.currency);
     }
     await assertCategory(this.categories, householdId, input.categoryId, input.type);
+    if (input.debtId !== undefined) {
+      await assertDebt(this.debts, householdId, input.debtId, input.type);
+    }
     const payment = RecurringPayment.create(
       household,
       {
@@ -208,6 +222,7 @@ export class MaterializeDueRecurringPayments {
     private readonly runner: TransactionRunner,
     private readonly clock: Clock,
     private readonly ids: IdGenerator,
+    private readonly debts: DebtRepository,
   ) {}
 
   async execute(today: string): Promise<{ created: number }> {
@@ -241,6 +256,10 @@ export class MaterializeDueRecurringPayments {
               }),
             );
             await this.payments.linkOccurrence(payment.id, next, transactionId);
+            // A loan instalment counts as a payment of its debt straight away.
+            if (p.debtId !== null && p.type === 'expense') {
+              await this.debts.linkPayment(p.debtId, transactionId);
+            }
             count += 1;
           }
           payment.advancePast(next);

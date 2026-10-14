@@ -100,8 +100,8 @@ export const payoffStrategyResultDtoSchema = z.object({
     }),
   ),
   totalInterest: moneyDtoSchema,
-  /** When the last debt is paid off. */
-  debtFreeDate: localDateSchema,
+  /** When the last debt is paid off (null when there is nothing to pay). */
+  debtFreeDate: localDateSchema.nullable(),
 });
 
 export type DebtKind = z.infer<typeof debtKindSchema>;

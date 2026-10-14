@@ -1,9 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
-import { MaterializeDueRecurringPayments, type Today } from '../application/recurring.use-cases.js';
-
-export const TODAY = Symbol('TODAY');
+import { TODAY, type Today } from '../../../shared/application/today.js';
+import { MaterializeDueRecurringPayments } from '../application/recurring.use-cases.js';
 
 /**
  * Runs the daily job at 05:00 Spanish time (Spring analogy: @Scheduled(cron = …)).

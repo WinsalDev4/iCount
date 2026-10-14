@@ -14,6 +14,7 @@ import {
 
 import { usersTable } from '../../../auth/infrastructure/persistence/auth.schema.js';
 import { categoriesTable } from '../../../categories/infrastructure/persistence/categories.schema.js';
+import { debtsTable } from '../../../debts/infrastructure/persistence/debts.schema.js';
 import { householdsTable } from '../../../households/infrastructure/persistence/households.schema.js';
 import { transactionsTable } from '../../../transactions/infrastructure/persistence/transactions.schema.js';
 import type { RecurringKind } from '../../domain/recurring-payment.js';
@@ -41,8 +42,8 @@ export const recurringPaymentsTable = pgTable(
       .notNull()
       .references(() => usersTable.id),
     shared: boolean('shared').notNull(),
-    /** Loan instalment linked to a debt (the FK arrives with the debts table, A-4.3). */
-    debtId: uuid('debt_id'),
+    /** Loan instalment: each movement it creates is linked as a payment of the debt. */
+    debtId: uuid('debt_id').references(() => debtsTable.id, { onDelete: 'set null' }),
     createdBy: uuid('created_by')
       .notNull()
       .references(() => usersTable.id),

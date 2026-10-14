@@ -5,6 +5,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { BudgetsModule } from './modules/budgets/budgets.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
+import { DebtsModule } from './modules/debts/debts.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { HouseholdsModule } from './modules/households/households.module.js';
 import { NotesModule } from './modules/notes/notes.module.js';
@@ -35,6 +36,7 @@ export class AppModule {
       TransactionsModule,
       BudgetsModule,
       RecurringModule,
+      DebtsModule,
       // The template module is a reference for new modules, not a product feature.
       ...(config.nodeEnv === 'production' ? [] : [NotesModule]),
     ];

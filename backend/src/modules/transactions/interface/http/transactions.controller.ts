@@ -200,7 +200,7 @@ export class TransactionsController {
   }
 }
 
-function toTransactionDto(transaction: Transaction): TransactionDto {
+export function toTransactionDto(transaction: Transaction): TransactionDto {
   const tx = transaction.snapshot;
   const money = (amountMinor: number) => ({ amountMinor, currency: tx.currency });
   return transactionDtoSchema.parse({
