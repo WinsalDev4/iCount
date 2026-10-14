@@ -78,6 +78,9 @@ function AccessStack() {
       <Stack.Protected guard={phase === 'offer-biometrics'}>
         <Stack.Screen name="enable-biometrics" />
       </Stack.Protected>
+      <Stack.Protected guard={phase === 'setup'}>
+        <Stack.Screen name="(setup)" />
+      </Stack.Protected>
       <Stack.Protected guard={phase === 'ready'}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="add" options={{ presentation: 'modal' }} />

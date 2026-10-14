@@ -6,6 +6,9 @@ import { accessStore } from '@/features/auth/data/accessStore';
 import { authPreferencesStore } from '@/features/auth/data/authPreferencesStore';
 import { InMemoryAuthRepository } from '@/features/auth/data/InMemoryAuthRepository';
 import type { Session } from '@/features/auth/domain/User';
+import { setupStore } from '@/features/household/data/setupStore';
+import { InMemoryHouseholdRepository } from '@/features/household/data/InMemoryHouseholdRepository';
+import type { Household } from '@/features/household/domain/Household';
 import { onboardingStore } from '@/features/onboarding/data/onboardingStore';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -45,7 +48,17 @@ const ana: Session = {
   user: { id: 'u1' as Session['user']['id'], email: 'ana@casa.app', displayName: null },
 };
 
+const casa: Household = {
+  id: 'h1' as Household['id'],
+  name: 'Casa',
+  kind: 'personal',
+  currency: 'EUR',
+  splitRule: { kind: 'equal' },
+  members: [],
+};
+
 interface Scenario {
+  households?: readonly Household[];
   onboardingCompleted?: boolean;
   session?: Session | null;
   biometricsEnabled?: boolean;
@@ -56,6 +69,7 @@ interface Scenario {
 }
 
 async function renderApp({
+  households = [casa],
   onboardingCompleted = true,
   session = ana,
   biometricsEnabled = false,
@@ -65,6 +79,8 @@ async function renderApp({
   initialUrl = '/',
 }: Scenario = {}) {
   jest.spyOn(InMemoryAuthRepository.prototype, 'getSession').mockResolvedValue(session);
+  jest.spyOn(InMemoryHouseholdRepository.prototype, 'getMine').mockResolvedValue(households);
+  setupStore.setState({ pendingHouseholdId: null });
   mockBiometrics.isAvailable.mockResolvedValue(biometricsAvailable);
   mockBiometrics.authenticate.mockResolvedValue(biometricPasses);
   await act(async () => {
@@ -189,6 +205,80 @@ describe('sign-in flow', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Cerrar sesión' }));
     await settle();
     expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();
+  });
+});
+
+describe('household setup', () => {
+  it('sends a signed-in user without a household to the setup', async () => {
+    await renderApp({ households: [] });
+    expect(screen.getByRole('header', { name: '¿Cómo vas a usar iCount?' })).toBeOnTheScreen();
+    expect(screen.queryByRole('tab', { name: 'Inicio' })).toBeNull();
+  });
+
+  it('keeps that user in the setup even from a deep link', async () => {
+    await renderApp({ households: [], initialUrl: '/plan' });
+    expect(screen.getByRole('header', { name: '¿Cómo vas a usar iCount?' })).toBeOnTheScreen();
+  });
+
+  it('a personal household is created in two taps and opens the app', async () => {
+    await renderApp({ households: [] });
+    await fireEvent.press(screen.getByRole('button', { name: 'Solo yo' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Crear' }));
+    await settle();
+    expect(screen.getByRole('tab', { name: 'Inicio' })).toBeSelected();
+  });
+
+  it('joining with a code opens the app', async () => {
+    await renderApp({ households: [] });
+    await fireEvent.press(screen.getByRole('button', { name: 'Tengo un código' }));
+    await fireEvent.changeText(screen.getByLabelText('Código de invitación'), 'wxyz-6789');
+    await fireEvent.press(screen.getByRole('button', { name: 'Unirme' }));
+    await settle();
+    expect(screen.getByRole('tab', { name: 'Inicio' })).toBeSelected();
+  });
+
+  it('a bad code shows the reason and stays on the setup', async () => {
+    await renderApp({ households: [] });
+    await fireEvent.press(screen.getByRole('button', { name: 'Tengo un código' }));
+    await fireEvent.changeText(screen.getByLabelText('Código de invitación'), 'EXPIRED1');
+    await fireEvent.press(screen.getByRole('button', { name: 'Unirme' }));
+    await settle();
+    expect(screen.getByRole('alert')).toHaveTextContent(/caducado/);
+    expect(screen.queryByRole('tab', { name: 'Inicio' })).toBeNull();
+  });
+
+  it('a shared household goes through invite and split before opening the app', async () => {
+    await renderApp({ households: [] });
+    await fireEvent.press(screen.getByRole('button', { name: 'Compartida' }));
+    await fireEvent.changeText(screen.getByLabelText('Nombre del hogar'), 'Casa Ana & Leo');
+    await fireEvent.press(screen.getByRole('button', { name: 'Crear e invitar' }));
+    await settle();
+
+    // The household exists already, yet the user is still in the setup (invite step).
+    expect(screen.getByRole('header', { name: 'Invita a tu gente' })).toBeOnTheScreen();
+    expect(screen.getByLabelText(/Código [A-Z0-9]{4}-[A-Z0-9]{4}/)).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Continuar' }));
+    await settle();
+
+    expect(screen.getByRole('header', { name: '¿Cómo repartís los gastos?' })).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('radio', { name: 'Según ingresos' }));
+    expect(screen.getByRole('radio', { name: 'Según ingresos' })).toBeSelected();
+    await fireEvent.press(screen.getByRole('button', { name: 'Guardar y empezar' }));
+    await settle();
+    expect(screen.getByRole('tab', { name: 'Inicio' })).toBeSelected();
+  });
+
+  it('"Más tarde" skips the split rule and opens the app', async () => {
+    await renderApp({ households: [] });
+    await fireEvent.press(screen.getByRole('button', { name: 'Compartida' }));
+    await fireEvent.changeText(screen.getByLabelText('Nombre del hogar'), 'Piso');
+    await fireEvent.press(screen.getByRole('button', { name: 'Crear e invitar' }));
+    await settle();
+    await fireEvent.press(screen.getByRole('button', { name: 'Continuar' }));
+    await settle();
+    await fireEvent.press(screen.getByRole('button', { name: 'Más tarde' }));
+    await settle();
+    expect(screen.getByRole('tab', { name: 'Inicio' })).toBeSelected();
   });
 });
 

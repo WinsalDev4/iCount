@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useDependencies } from '@/core/di/DependenciesProvider';
+import { useSetupStore } from '@/features/household/data/setupStore';
+import { useMyHouseholds } from '@/features/household/presentation/households';
 import { useOnboardingStore } from '@/features/onboarding/data/onboardingStore';
 
 import { useAccessStore } from '../data/accessStore';
@@ -33,20 +35,25 @@ export function useAccess(): { phase: AccessPhase } {
   const unlocked = useAccessStore((s) => s.unlocked);
   const session = useSessionQuery();
   const available = useBiometricsAvailable();
+  const setupInProgress = useSetupStore((s) => s.pendingHouseholdId !== null);
 
   const signedIn = Boolean(session.data);
+  const households = useMyHouseholds({ enabled: signedIn });
   const phase = resolveAccess({
     // The device check only matters once someone is signed in.
     loading:
       !onboardingHydrated ||
       !prefsHydrated ||
       session.isPending ||
-      (signedIn && available.isPending),
+      (signedIn && (available.isPending || households.isPending)),
     onboardingCompleted,
     signedIn,
     biometricsEnabled,
     unlocked,
     offerBiometrics: available.data === true && !biometricsPrompted,
+    // An unreadable list (offline) must not push an existing user back into the setup: only an
+    // answer that really says "none" does.
+    needsHousehold: setupInProgress || (households.isSuccess && households.data.length === 0),
   });
   return { phase };
 }

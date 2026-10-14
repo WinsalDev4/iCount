@@ -7,6 +7,7 @@ const base: AccessInputs = {
   biometricsEnabled: false,
   unlocked: false,
   offerBiometrics: false,
+  needsHousehold: false,
 };
 
 describe('resolveAccess', () => {
@@ -52,6 +53,30 @@ describe('resolveAccess', () => {
     expect(
       resolveAccess({ ...base, offerBiometrics: true, biometricsEnabled: true, unlocked: true }),
     ).toBe('ready');
+  });
+
+  it('sends a signed-in user without a household to the setup', () => {
+    expect(resolveAccess({ ...base, needsHousehold: true })).toBe('setup');
+  });
+
+  it('keeps the user in the setup while a shared household is being finished', () => {
+    // The household exists already; "needsHousehold" stays true until the wizard ends.
+    expect(resolveAccess({ ...base, needsHousehold: true, biometricsEnabled: false })).toBe(
+      'setup',
+    );
+  });
+
+  it('asks for the biometric lock and offer before the household setup', () => {
+    expect(
+      resolveAccess({ ...base, needsHousehold: true, biometricsEnabled: true, unlocked: false }),
+    ).toBe('locked');
+    expect(resolveAccess({ ...base, needsHousehold: true, offerBiometrics: true })).toBe(
+      'offer-biometrics',
+    );
+  });
+
+  it('never shows the setup to a signed-out user', () => {
+    expect(resolveAccess({ ...base, signedIn: false, needsHousehold: true })).toBe('signed-out');
   });
 
   it('never offers biometrics to a signed-out user', () => {

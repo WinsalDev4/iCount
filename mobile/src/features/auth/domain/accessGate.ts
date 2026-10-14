@@ -2,10 +2,10 @@
  * Which part of the app the user may see. One pure function decides it, so the root layout
  * only maps the phase to route guards:
  *
- *   loading → onboarding → signed-out → locked → offer-biometrics → ready
+ *   loading → onboarding → signed-out → locked → offer-biometrics → setup → ready
  */
 export type AccessPhase =
-  'loading' | 'onboarding' | 'signed-out' | 'locked' | 'offer-biometrics' | 'ready';
+  'loading' | 'onboarding' | 'signed-out' | 'locked' | 'offer-biometrics' | 'setup' | 'ready';
 
 export interface AccessInputs {
   /** Persisted flags, the stored session and the device check are still being read. */
@@ -18,6 +18,8 @@ export interface AccessInputs {
   readonly unlocked: boolean;
   /** The one-time opt-in is due: the device supports it and the user was not asked yet. */
   readonly offerBiometrics: boolean;
+  /** No household yet, or the setup of a just-created shared one is not finished. */
+  readonly needsHousehold: boolean;
 }
 
 export function resolveAccess(input: AccessInputs): AccessPhase {
@@ -26,5 +28,6 @@ export function resolveAccess(input: AccessInputs): AccessPhase {
   if (!input.signedIn) return 'signed-out';
   if (input.biometricsEnabled && !input.unlocked) return 'locked';
   if (input.offerBiometrics && !input.biometricsEnabled) return 'offer-biometrics';
+  if (input.needsHousehold) return 'setup';
   return 'ready';
 }
