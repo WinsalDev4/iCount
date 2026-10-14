@@ -23,7 +23,7 @@ Prepara la fase 5 según docs/plan/fase-5-hogar-compartido.md: ADR-0016 (balance
 
 ## Pista A · Opus
 
-### [ ] A-5.1 · Backend: balances, liquidaciones, actividad y aprobaciones
+### [x] A-5.1 · Backend: balances, liquidaciones, actividad y aprobaciones
 - **Rama:** `feature/a-5.1-backend-balances` · **Depende de:** 5.0
 - **Ficheros exclusivos:** `backend/**`, `mobile/src/features/{settlements,activity}/data/api/**`, `docs/backend/hogar-compartido.md`
 - **Hecho cuando:** balance neto por miembro y periodo; sugerencia de mínimas transferencias; registrar una liquidación; feed de actividad (alta, edición, pago, liquidación); los movimientos compartidos añadidos por otro miembro quedan "pendientes" hasta aprobarse; comentarios; repositorios de API en la app; tests (3 o más miembros, céntimos impares).
