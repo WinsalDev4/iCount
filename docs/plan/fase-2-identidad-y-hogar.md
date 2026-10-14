@@ -84,7 +84,7 @@ Implementa la feature auth (pantalla 02, maquetación C "sin contraseña"): caso
 Protege las rutas (onboarding → auth → app) con lo que recomiende la doc de Expo Router de SDK 57 para rutas protegidas. Rellena auth.module.ts con la implementación en memoria. Tests de casos de uso y ViewModels. docs/features/acceso.md.
 ```
 
-### [ ] B-2.3 · Crear o unirse a un hogar (03-A)
+### [x] B-2.3 · Crear o unirse a un hogar (03-A)
 - **Rama:** `feature/b-2.3-hogar-setup` · **Depende de:** B-2.2
 - **Ficheros exclusivos:** `mobile/src/features/household/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/household/household.module.ts`, `mobile/src/app/(setup)/**`, `docs/features/hogar-setup.md`
 - **Hecho cuando:** elegir personal o compartida (tarjetas desplegables), nombre del hogar, compartir el código de invitación (API `Share` de React Native), unirse con un código, elegir la regla de reparto con vista previa; casos de uso `CreateHousehold`, `CreateInvite`, `JoinHousehold` y `SetSplitRule`; tests.
