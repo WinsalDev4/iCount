@@ -1,6 +1,6 @@
 # Feature: Añadir movimiento
 
-Tarea B-3.1 · Pantalla 05 del lienzo, maquetación **A · Teclado propio** ([ADR-0009](../adr/0009-direccion-visual-midnight-glass.md)) · Caché y optimistas: [ADR-0014](../adr/0014-persistencia-cache-y-optimistas.md)
+Tarea B-3.1 · Pantalla 05 del lienzo, maquetación **A · Teclado propio** ([ADR-0009](../adr/0009-direccion-visual-midnight-glass.md)) · Caché y optimistas: [ADR-0014](../adr/0014-cache-persistida-y-optimistas.md)
 
 ## Qué hace
 El botón `+` de la barra abre un modal para registrar un gasto o un ingreso en **tres toques y un guardar**: el importe se teclea en un teclado numérico propio (con un toque háptico por tecla), se elige la categoría con chips, "Hoy"/"Ayer" para la fecha y, en un hogar compartido con más gente, quién pagó y si el movimiento es **compartido**. Al guardar, el movimiento aparece **al instante** arriba de las listas y el modal se cierra; si el servidor lo rechaza, desaparece y se explica el motivo.
