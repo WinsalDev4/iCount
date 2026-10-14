@@ -34,7 +34,7 @@ Backend: módulo settlements (balance neto por miembro, algoritmo de mínimas tr
 Tests con 3+ miembros y céntimos impares. docs/backend/hogar-compartido.md.
 ```
 
-### [ ] A-5.2 · Notificaciones push de punta a punta
+### [x] A-5.2 · Notificaciones push de punta a punta
 - **Rama:** `feature/a-5.2-push` · **Depende de:** A-5.1
 - **Ficheros exclusivos:** `backend/**`, `mobile/src/core/notifications/**`, `mobile/src/features/push/data/api/**`, `docs/architecture/push.md`
 - **Hecho cuando:** la app registra el token push tras el login; el backend envía notificaciones en "nuevo gasto compartido", "aprobación pendiente" y "recordatorio de saldar", con limpieza de tokens inválidos; tocar la notificación abre la ruta correcta (deep link); tests del emisor con el SDK simulado.
