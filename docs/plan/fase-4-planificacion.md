@@ -45,7 +45,7 @@ Tarea A-4.2 de iCount (sigue docs/plan/PROTOCOLO.md; pista A, Opus).
 Backend: módulo budgets (límite por categoría/mes, gasto acumulado y restante) y módulo recurring (reglas de periodicidad con ajuste de fin de mes, job programado idempotente con @nestjs/schedule que materializa transacciones y calcula próximos vencimientos). Tests (idempotencia del job incluida). docs/backend/planificacion.md.
 ```
 
-### [ ] A-4.3 · Backend de deudas + repositorios de API de la fase
+### [x] A-4.3 · Backend de deudas + repositorios de API de la fase
 - **Rama:** `feature/a-4.3-deudas-y-datos` · **Depende de:** A-4.2
 - **Ficheros exclusivos:** `backend/**`, `mobile/src/features/{budgets,debts,recurring}/data/api/**`, `docs/backend/deudas.md`
 - **Hecho cuando:** CRUD de deudas, pagos enlazados a movimientos de la categoría Préstamos, cuadro de amortización y estrategia calculados con `@icount/finance`; en la app, `ApiBudgetRepository`, `ApiDebtRepository` y `ApiRecurringPaymentRepository`; tests.

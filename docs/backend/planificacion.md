@@ -56,7 +56,7 @@ para cada serie con next_due_date ≤ hoy:
 
 ## Modelo de datos (migración `0005`)
 - `budgets` con la restricción única.
-- `recurring_payments`: `rule` en JSONB, fechas como `DATE`, índice por `next_due_date` (el trabajo diario) y por hogar. `debt_id` sin FK hasta que exista la tabla de deudas (A-4.3).
+- `recurring_payments`: `rule` en JSONB, fechas como `DATE`, índice por `next_due_date` (el trabajo diario) y por hogar. `debt_id` con FK a `debts` desde la migración `0006` (ver [deudas](deudas.md)).
 - `recurring_occurrences` con PK `(recurring_payment_id, due_date)` y FK `ON DELETE SET NULL` al movimiento.
 
 ## Para la entrevista
