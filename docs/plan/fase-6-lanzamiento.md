@@ -13,6 +13,8 @@
   - ADR-0019 (observabilidad): Sentry en app y backend, y logs estructurados.
   - `npx eas-cli@latest init` hecho con el usuario (projectId en `app.json`); variables `EXPO_PUBLIC_API_URL` por perfil en `eas.json`.
   - Dependencias: `@sentry/react-native`, `expo-localization`, `i18n-js` (o la librería que se decida); backend `@sentry/nestjs` y `helmet`.
+    - ✅ **Hecho en G.0 (parte técnica):** `expo-localization` (plugin con `es` y `en`), `i18n-js` y `helmet`.
+    - ⏳ **Pendiente en esta 6.0:** ADR-0018, ADR-0019, `eas init` con la cuenta del usuario, `EXPO_PUBLIC_API_URL` por perfil en `eas.json` y Sentry (`@sentry/react-native`, `@sentry/nestjs`), que depende de ADR-0019.
   - Fase 6 → 🚧.
 - **Prompt:**
 ```

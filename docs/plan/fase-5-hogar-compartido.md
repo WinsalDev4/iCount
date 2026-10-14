@@ -4,7 +4,7 @@
 
 ---
 
-## [ ] 5.0 · Preparación — Opus, en solitario
+## [x] 5.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/5.0-preparacion-hogar` · **Depende de:** fase 4 ✅
 - **Hecho cuando:**
   - ADR-0016 (balances y liquidaciones): balance neto por miembro y algoritmo voraz de mínimas transferencias; cómo afectan los movimientos pendientes de aprobar.
@@ -23,7 +23,7 @@ Prepara la fase 5 según docs/plan/fase-5-hogar-compartido.md: ADR-0016 (balance
 
 ## Pista A · Opus
 
-### [ ] A-5.1 · Backend: balances, liquidaciones, actividad y aprobaciones
+### [x] A-5.1 · Backend: balances, liquidaciones, actividad y aprobaciones
 - **Rama:** `feature/a-5.1-backend-balances` · **Depende de:** 5.0
 - **Ficheros exclusivos:** `backend/**`, `mobile/src/features/{settlements,activity}/data/api/**`, `docs/backend/hogar-compartido.md`
 - **Hecho cuando:** balance neto por miembro y periodo; sugerencia de mínimas transferencias; registrar una liquidación; feed de actividad (alta, edición, pago, liquidación); los movimientos compartidos añadidos por otro miembro quedan "pendientes" hasta aprobarse; comentarios; repositorios de API en la app; tests (3 o más miembros, céntimos impares).
@@ -34,7 +34,7 @@ Backend: módulo settlements (balance neto por miembro, algoritmo de mínimas tr
 Tests con 3+ miembros y céntimos impares. docs/backend/hogar-compartido.md.
 ```
 
-### [ ] A-5.2 · Notificaciones push de punta a punta
+### [x] A-5.2 · Notificaciones push de punta a punta
 - **Rama:** `feature/a-5.2-push` · **Depende de:** A-5.1
 - **Ficheros exclusivos:** `backend/**`, `mobile/src/core/notifications/**`, `mobile/src/features/push/data/api/**`, `docs/architecture/push.md`
 - **Hecho cuando:** la app registra el token push tras el login; el backend envía notificaciones en "nuevo gasto compartido", "aprobación pendiente" y "recordatorio de saldar", con limpieza de tokens inválidos; tocar la notificación abre la ruta correcta (deep link); tests del emisor con el SDK simulado.

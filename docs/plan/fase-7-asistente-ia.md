@@ -6,7 +6,7 @@
 
 ---
 
-## [ ] 7.0 · Preparación — Opus, en solitario
+## [x] 7.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/7.0-preparacion-ia` · **Depende de:** fase 6 ✅
 - **Hecho cuando:**
   - ADR-0020 (IA):
@@ -30,7 +30,7 @@ Prepara la fase 7 según docs/plan/fase-7-asistente-ia.md. Usa la skill claude-a
 
 ## Pista A · Opus
 
-### [ ] A-7.1 · Backend: asesor financiero
+### [x] A-7.1 · Backend: asesor financiero
 - **Rama:** `feature/a-7.1-asesor` · **Depende de:** 7.0
 - **Ficheros exclusivos:** `backend/**`, `mobile/src/features/advisor/data/api/**`, `docs/backend/ia.md`
 - **Hecho cuando:**

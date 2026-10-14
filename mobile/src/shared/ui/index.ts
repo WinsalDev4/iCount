@@ -1,5 +1,6 @@
 export { AppText, type AppTextProps, type TextTone, type TextVariant } from './AppText';
 export { Avatar, AvatarStack, type AvatarProps, type AvatarStackProps } from './Avatar';
+export { BarChart, type Bar, type BarChartProps } from './BarChart';
 export { Button, type ButtonProps, type ButtonVariant } from './Button';
 export { Chip, type ChipProps } from './Chip';
 export { Donut, type DonutProps } from './Donut';
@@ -16,5 +17,10 @@ export {
   type SegmentedControlProps,
   type SegmentedOption,
 } from './SegmentedControl';
+export { SwitchRow, type SwitchRowProps } from './SwitchRow';
+export { ExpandableCard, type ExpandableCardProps } from './ExpandableCard';
+export { NumericKeypad, type NumericKey, type NumericKeypadProps } from './NumericKeypad';
+export { OptionCard, type OptionCardProps } from './OptionCard';
 export { TabBar, type TabBarItem, type TabBarProps } from './TabBar';
+export { TextField, type TextFieldProps } from './TextField';
 export { theme } from './theme';

@@ -10,16 +10,55 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().min(0).max(65_535).default(3000),
   DATABASE_URL: z.url({ protocol: /^postgres(ql)?$/ }),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
+  /** HS256 secret for access tokens (ADR-0013). At least 32 characters of randomness. */
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
+  /** SMTP server for transactional email; Mailpit in development (docker compose). */
+  SMTP_URL: z.url({ protocol: /^smtps?$/ }).default('smtp://localhost:1025'),
+  MAIL_FROM: z.string().min(3).default('iCount <no-reply@icount.local>'),
+  /** Where magic links point; the token is appended as `?token=…`. */
+  MAGIC_LINK_URL: z.url().default('icount://auth/verify'),
+  /** Optional: only needed when "enhanced push security" is on in the Expo project (ADR-0017). */
+  EXPO_ACCESS_TOKEN: z.string().min(1).optional(),
+  /** AI advisor (ADR-0020). Without it the advisor uses the detectors' default wording and chat answers 503. */
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  /** Chat messages per user and day (cost quota). */
+  ADVISOR_DAILY_CHAT_QUOTA: z.coerce.number().int().min(0).max(1_000).default(20),
 });
 
 export type NodeEnv = z.infer<typeof envSchema>['NODE_ENV'];
 export type LogLevel = z.infer<typeof envSchema>['LOG_LEVEL'];
+
+export interface AuthConfig {
+  readonly jwtSecret: string;
+  readonly accessTokenTtlSeconds: number;
+  readonly refreshTokenTtlDays: number;
+  readonly magicLinkTtlMinutes: number;
+  readonly magicLinkUrl: string;
+}
+
+export interface MailConfig {
+  readonly smtpUrl: string;
+  readonly from: string;
+}
+
+export interface PushConfig {
+  readonly expoAccessToken: string | null;
+}
+
+export interface AdvisorConfig {
+  readonly anthropicApiKey: string | null;
+  readonly dailyChatQuota: number;
+}
 
 export interface AppConfig {
   readonly nodeEnv: NodeEnv;
   readonly port: number;
   readonly databaseUrl: string;
   readonly logLevel: LogLevel;
+  readonly auth: AuthConfig;
+  readonly mail: MailConfig;
+  readonly push: PushConfig;
+  readonly advisor: AdvisorConfig;
 }
 
 /** Injection token for the validated configuration. */
@@ -38,6 +77,25 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
   const result = envSchema.safeParse(cleaned);
   if (!result.success) throw new InvalidConfigError(z.prettifyError(result.error));
 
-  const { NODE_ENV, PORT, DATABASE_URL, LOG_LEVEL } = result.data;
-  return { nodeEnv: NODE_ENV, port: PORT, databaseUrl: DATABASE_URL, logLevel: LOG_LEVEL };
+  const env_ = result.data;
+  return {
+    nodeEnv: env_.NODE_ENV,
+    port: env_.PORT,
+    databaseUrl: env_.DATABASE_URL,
+    logLevel: env_.LOG_LEVEL,
+    auth: {
+      jwtSecret: env_.JWT_SECRET,
+      // Fixed by ADR-0013; constants rather than env so they cannot be misconfigured.
+      accessTokenTtlSeconds: 15 * 60,
+      refreshTokenTtlDays: 30,
+      magicLinkTtlMinutes: 15,
+      magicLinkUrl: env_.MAGIC_LINK_URL,
+    },
+    mail: { smtpUrl: env_.SMTP_URL, from: env_.MAIL_FROM },
+    push: { expoAccessToken: env_.EXPO_ACCESS_TOKEN ?? null },
+    advisor: {
+      anthropicApiKey: env_.ANTHROPIC_API_KEY ?? null,
+      dailyChatQuota: env_.ADVISOR_DAILY_CHAT_QUOTA,
+    },
+  };
 }

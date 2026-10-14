@@ -4,7 +4,7 @@
 
 ---
 
-## [ ] 4.0 · Preparación — Opus, en solitario
+## [x] 4.0 · Preparación — Opus, en solitario
 - **Rama:** `feature/4.0-preparacion-planificacion` · **Depende de:** fase 3 ✅
 - **Hecho cuando:**
   - ADR-0015 (motor financiero compartido): paquete `packages/finance` en TypeScript puro, usado por la app (simulación offline) y por el backend (fuente de verdad); reglas de redondeo; amortización francesa.
@@ -24,7 +24,7 @@ Marca estados en docs/plan/README.md.
 
 ## Pista A · Opus
 
-### [ ] A-4.1 · Motor financiero (`packages/finance`) — PRIORITARIA (B-4.2 depende de ella)
+### [x] A-4.1 · Motor financiero (`packages/finance`) — PRIORITARIA (B-4.2 depende de ella)
 - **Rama:** `feature/a-4.1-motor-financiero` · **Depende de:** 4.0
 - **Ficheros exclusivos:** `packages/finance/**`, `docs/architecture/motor-financiero.md`
 - **Hecho cuando:** funciones puras sobre céntimos enteros: cuota francesa, cuadro de amortización, saldo pendiente a una fecha, simulación de amortización anticipada mensual (meses ahorrados e intereses ahorrados), estrategias **avalancha** y **bola de nieve** con varias deudas y aportación extra (fecha de fin por deuda e intereses totales); tests contrastados con cuadros conocidos; documentación con las fórmulas.
@@ -35,7 +35,7 @@ Implementa @icount/finance (TS puro, céntimos enteros, redondeo explícito y do
 Tests contra cuadros de referencia calculados (incluye el caso del lienzo: coche 8.640 € al 6,9% con 320 €/mes y +100 €/mes). Explica fórmulas y decisiones en docs/architecture/motor-financiero.md.
 ```
 
-### [ ] A-4.2 · Backend: presupuestos y pagos recurrentes
+### [x] A-4.2 · Backend: presupuestos y pagos recurrentes
 - **Rama:** `feature/a-4.2-backend-presupuestos-recurrentes` · **Depende de:** A-4.1
 - **Ficheros exclusivos:** `backend/**`, `docs/backend/planificacion.md`
 - **Hecho cuando:** presupuestos por categoría y mes, con gasto acumulado calculado; pagos recurrentes (mensual, anual, cada N meses, día del mes con ajuste a fin de mes); tarea programada idempotente que materializa los movimientos y los vencimientos próximos; tests.
@@ -45,7 +45,7 @@ Tarea A-4.2 de iCount (sigue docs/plan/PROTOCOLO.md; pista A, Opus).
 Backend: módulo budgets (límite por categoría/mes, gasto acumulado y restante) y módulo recurring (reglas de periodicidad con ajuste de fin de mes, job programado idempotente con @nestjs/schedule que materializa transacciones y calcula próximos vencimientos). Tests (idempotencia del job incluida). docs/backend/planificacion.md.
 ```
 
-### [ ] A-4.3 · Backend de deudas + repositorios de API de la fase
+### [x] A-4.3 · Backend de deudas + repositorios de API de la fase
 - **Rama:** `feature/a-4.3-deudas-y-datos` · **Depende de:** A-4.2
 - **Ficheros exclusivos:** `backend/**`, `mobile/src/features/{budgets,debts,recurring}/data/api/**`, `docs/backend/deudas.md`
 - **Hecho cuando:** CRUD de deudas, pagos enlazados a movimientos de la categoría Préstamos, cuadro de amortización y estrategia calculados con `@icount/finance`; en la app, `ApiBudgetRepository`, `ApiDebtRepository` y `ApiRecurringPaymentRepository`; tests.
@@ -59,7 +59,7 @@ Backend: módulo debts (CRUD, pagos enlazados a transacciones de la categoría p
 
 ## Pista B · Sonnet
 
-### [ ] B-4.1 · Presupuestos (07-A)
+### [x] B-4.1 · Presupuestos (07-A)
 - **Rama:** `feature/b-4.1-presupuestos` · **Depende de:** 4.0
 - **Ficheros exclusivos:** `mobile/src/features/budgets/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/budgets/budgets.module.ts`, `mobile/src/app/(tabs)/plan*`, `mobile/src/app/budgets/**`, `docs/features/presupuestos.md`
 - **Hecho cuando:** pestaña Planificar con la entrada a Presupuestos, Deudas y Recurrentes; lista de presupuestos con barras, restante o exceso (en rojo si se supera); crear y editar presupuesto; acción "mover importe entre presupuestos"; se activa el bloque de presupuestos de Inicio; tests.
@@ -70,7 +70,7 @@ Implementa la pestaña Planificar (hub a Presupuestos / Deudas / Recurrentes) y 
 Casos de uso + InMemoryBudgetRepository + budgets.module.ts. Tests. docs/features/presupuestos.md.
 ```
 
-### [ ] B-4.2 · Deudas (08-B + estrategia)
+### [x] B-4.2 · Deudas (08-B + estrategia)
 - **Rama:** `feature/b-4.2-deudas` · **Depende de:** B-4.1 y **A-4.1** (motor financiero en `develop`)
 - **Ficheros exclusivos:** `mobile/src/features/debts/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/debts/debts.module.ts`, `mobile/src/app/debts/**`, `docs/features/deudas.md`
 - **Hecho cuando:** lista de deudas con total pendiente; detalle con anillo de progreso, cuota y fecha de fin; simulador de pago extra (chips 50/100/200) calculado en el dispositivo con `@icount/finance`; sección de estrategia avalancha frente a bola de nieve; alta y edición de deudas; tests.
@@ -81,7 +81,7 @@ Implementa la feature debts (pantalla 08, maquetación B "detalle + simulador"):
 Casos de uso + InMemoryDebtRepository + debts.module.ts. Tests. docs/features/deudas.md.
 ```
 
-### [ ] B-4.3 · Pagos recurrentes
+### [x] B-4.3 · Pagos recurrentes
 - **Rama:** `feature/b-4.3-recurrentes` · **Depende de:** B-4.2
 - **Ficheros exclusivos:** `mobile/src/features/recurring/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/recurring/recurring.module.ts`, `mobile/src/app/recurring/**`, `docs/features/recurrentes.md`
 - **Hecho cuando:** lista y calendario de próximos vencimientos; crear un recurrente (factura, letra, suscripción) con periodicidad; recordatorio local con `expo-notifications` el día antes; tests.

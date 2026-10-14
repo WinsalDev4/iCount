@@ -19,7 +19,20 @@ const STATUS_BY_KIND: Record<DomainErrorKind, number> = {
   not_found: HttpStatus.NOT_FOUND,
   conflict: HttpStatus.CONFLICT,
   forbidden: HttpStatus.FORBIDDEN,
+  unauthenticated: HttpStatus.UNAUTHORIZED,
+  rate_limited: HttpStatus.TOO_MANY_REQUESTS,
+  unavailable: HttpStatus.SERVICE_UNAVAILABLE,
 };
+
+/** Problem body of a domain error; also used where no HTTP response is left (SSE). */
+export function domainProblem(error: DomainError): ProblemBody {
+  return {
+    type: problemType(error.code),
+    title: error.title,
+    status: STATUS_BY_KIND[error.kind],
+    detail: error.message,
+  };
+}
 
 type ProblemBody = Omit<ProblemDetails, 'instance' | 'traceId'>;
 
@@ -58,14 +71,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
       };
     }
 
-    if (exception instanceof DomainError) {
-      return {
-        type: problemType(exception.code),
-        title: exception.title,
-        status: STATUS_BY_KIND[exception.kind],
-        detail: exception.message,
-      };
-    }
+    if (exception instanceof DomainError) return domainProblem(exception);
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus();

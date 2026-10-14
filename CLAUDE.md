@@ -17,9 +17,10 @@ Antes de tocar APIs de Expo, lee `mobile/AGENTS.md`: consulta la doc versionada,
 | Flujo Git | Git Flow + Conventional Commits | 0005 |
 | Monorepo | npm workspaces; `packages/*` sin build (TS borrable, imports `.ts`) | 0011 |
 | ORM | Drizzle + `pg` + drizzle-kit | 0012 |
+| Auth | Enlace mágico + JWT 15 min + refresh rotatorio; biometría solo local | 0013 |
 
 ## Estado
-Fase 1 cerrada (release **0.1.0**): monorepo, backend base, contratos, red, design system y navegación. Siguiente: fase 2 (`/tarea 2.0`).
+Fases 1–3 cerradas (releases **0.1.0**, **0.2.0** y **0.3.0**): monorepo y backend base; login sin contraseña y hogares; movimientos con caché persistida y altas optimistas, probadas en el emulador contra la API real (`EXPO_PUBLIC_DATA_SOURCE=api`, ver `docs/architecture/integracion-api.md`). Preparación global G.0 hecha (3.0–7.0; de la 6.0 falta lo que necesita al usuario). Backend de las fases 4, 5 y 7 hecho (pista A); sus cierres 4.9, 5.9 y 7.9 esperan a la pista B.
 
 ## Plan de desarrollo
 - Plan completo por fases: `docs/plan/README.md` (estado) y `docs/plan/fase-*.md` (tareas con prompt).
@@ -41,4 +42,4 @@ Fase 1 cerrada (release **0.1.0**): monorepo, backend base, contratos, red, desi
 - El usuario viene de Android (Kotlin/KMP) e iOS (SwiftUI): explica con analogías a esos stacks. Idioma: español.
 
 ## Git
-Ramas `feature/<id>-<slug>` desde `develop`; PR a `develop`; releases `release/0.X.0` al cerrar cada fase. Nunca commitear directo a `main` ni a `develop`.
+Ramas `feature/<id>-<slug>` desde `develop`. **Sin PR** (decisión del 2026-10-14: la espera de CI frenaba el trabajo): se verifica en local (`npm run verify`), se hace `git fetch && git rebase origin/develop` y se integra con `git push origin HEAD:develop` (solo avance rápido, sin `--force`). La CI de `develop` es la red de seguridad: si falla, quien la rompió la arregla en seguida. Releases `release/0.X.0` al cerrar cada fase. Nunca commitear directo en `main`.

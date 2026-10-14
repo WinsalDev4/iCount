@@ -4,9 +4,9 @@ import { render, screen } from '@testing-library/react-native';
 import { Icon, iconNames } from '../Icon';
 
 describe('Icon', () => {
-  it('ships the seven icons the app needs', () => {
+  it('ships the eight icons the app needs', () => {
     expect([...iconNames].sort()).toEqual(
-      ['back', 'home', 'list', 'plus', 'send', 'target', 'users'].sort(),
+      ['back', 'forward', 'home', 'list', 'plus', 'send', 'target', 'users'].sort(),
     );
   });
 

@@ -1,3 +1,4 @@
+import type { UserId } from '@/core/domain/Ids';
 import { Money } from '@/core/domain/Money';
 
 import type { Transaction } from '../../Transaction';
@@ -13,10 +14,15 @@ const tx = (overrides: Partial<Transaction>): Transaction => ({
   description: '',
   occurredAt: new Date('2026-10-01'),
   householdId: 'home',
+  payerId: 'me' as UserId,
+  shared: false,
+  shares: [],
   ...overrides,
 });
 
-const repositoryReturning = (transactions: Transaction[]): TransactionRepository => ({
+const repositoryReturning = (
+  transactions: Transaction[],
+): Pick<TransactionRepository, 'findByMonth'> => ({
   findByMonth: jest.fn().mockResolvedValue(transactions),
 });
 

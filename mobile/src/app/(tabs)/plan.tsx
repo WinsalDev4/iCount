@@ -1,13 +1,4 @@
-import { PlaceholderScreen } from '@/shared/ui/PlaceholderScreen';
+import { PlanHubScreen } from '@/features/budgets/presentation/PlanHubScreen';
 
-/** Provisional: B-4.1 replaces this with the planning hub (budgets, debts, recurring). */
-export default function PlanRoute() {
-  return (
-    <PlaceholderScreen
-      title="Planificar"
-      icon="target"
-      description="Presupuestos, deudas y pagos recurrentes llegarán aquí."
-      edges={['top', 'left', 'right']}
-    />
-  );
-}
+/** Provisional hub since B-1.2; entries for debts and recurring light up in B-4.2 / B-4.3. */
+export default PlanHubScreen;

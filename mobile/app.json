@@ -34,6 +34,35 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 200
         }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Permite que $(PRODUCT_NAME) use Face ID para desbloquear tu sesión."
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Permite que $(PRODUCT_NAME) use Face ID para desbloquear tu sesión."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#8C7BFF",
+          "defaultChannel": "default"
+        }
+      ],
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": ["es", "en"],
+            "android": ["es", "en"]
+          }
+        }
       ]
     ],
     "scheme": "icount",

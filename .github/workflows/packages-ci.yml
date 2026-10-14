@@ -1,0 +1,33 @@
+name: packages-ci
+
+# Shared packages (contracts, finance): pure TypeScript consumed by app and backend.
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/packages-ci.yml'
+  pull_request:
+    paths:
+      - 'packages/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/packages-ci.yml'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint -w @icount/contracts -w @icount/finance
+      - run: npm run typecheck -w @icount/contracts -w @icount/finance
+      - run: npm run format:check -w @icount/contracts -w @icount/finance
+      - run: npm test -w @icount/contracts -w @icount/finance

@@ -3,6 +3,7 @@ import { ApiOkResponse, ApiServiceUnavailableResponse, ApiTags } from '@nestjs/s
 import type { Response } from 'express';
 import { z } from 'zod';
 
+import { Public } from '../../../../shared/auth/public.decorator.js';
 import { zodToOpenApi } from '../../../../shared/interface/http/openapi.js';
 import { CheckHealth } from '../../application/check-health.use-case.js';
 import type { HealthReport } from '../../domain/health-report.js';
@@ -25,6 +26,7 @@ export type HealthResponse = z.infer<typeof healthResponseSchema>;
  * Not versioned: load balancers and uptime monitors call it directly.
  */
 @ApiTags('health')
+@Public()
 @Controller('health')
 export class HealthController {
   private readonly logger = new Logger(HealthController.name);
