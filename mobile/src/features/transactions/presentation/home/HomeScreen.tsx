@@ -1,6 +1,8 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
+import { BudgetBar } from '@/features/budgets/presentation/BudgetBar';
 import { AppText } from '@/shared/ui/AppText';
 import { AvatarStack } from '@/shared/ui/Avatar';
 import { BarChart } from '@/shared/ui/BarChart';
@@ -15,6 +17,7 @@ import { useHomeViewModel } from './useHomeViewModel';
 /** Inicio (screen 04-C "gasto diario"): the number that matters is what you can spend TODAY. */
 export function HomeScreen() {
   const { state, refresh } = useHomeViewModel();
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
@@ -115,7 +118,38 @@ export function HomeScreen() {
           </View>
         </GlassCard>
 
-        {/* state.budgets: the budgets block appears here in phase 4 (B-4.1). */}
+        {state.budgets ? (
+          <GlassCard style={styles.card}>
+            <View style={styles.cardHeader}>
+              <AppText variant="label" tone="muted">
+                PRESUPUESTOS
+              </AppText>
+              <AppText variant="small" tone="muted">
+                {state.budgets.totalLabel}
+              </AppText>
+            </View>
+            {state.budgets.rows.map((row) => (
+              <BudgetBar
+                key={row.id}
+                title={row.categoryName}
+                amounts={`${row.spent} de ${row.limit}`}
+                statusLabel={row.statusLabel}
+                ratio={row.ratio}
+                percent={row.percent}
+                status={row.status}
+              />
+            ))}
+            <Button
+              label={
+                state.budgets.count > state.budgets.rows.length
+                  ? `Ver los ${state.budgets.count} presupuestos`
+                  : 'Ver presupuestos'
+              }
+              variant="ghost"
+              onPress={() => router.push('/budgets')}
+            />
+          </GlassCard>
+        ) : null}
 
         <View style={styles.recent}>
           <AppText variant="label" tone="muted">

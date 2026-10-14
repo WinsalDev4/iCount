@@ -9,6 +9,17 @@ import { sessionQueryKey } from '@/features/auth/presentation/session';
 import type { Household, Member } from '@/features/household/domain/Household';
 
 import {
+  InMemoryBudgetRepository,
+  type InMemoryBudgetOptions,
+} from '@/features/budgets/data/InMemoryBudgetRepository';
+import {
+  CreateBudget,
+  DeleteBudget,
+  ListBudgets,
+  MoveBudgetAmount,
+  UpdateBudgetLimit,
+} from '@/features/budgets/domain/usecases/BudgetUseCases';
+import {
   InMemoryTransactionRepository,
   type InMemoryTransactionOptions,
 } from '../data/InMemoryTransactionRepository';
@@ -60,6 +71,8 @@ export function createTransactionsTestKit(
     household?: Household;
     repository?: TransactionRepository;
     memory?: InMemoryTransactionOptions;
+    /** Budgets of the household; none by default (the demo budgets are off). */
+    budgets?: InMemoryBudgetOptions;
   } = {},
 ) {
   const household = options.household ?? householdOf('personal');
@@ -79,9 +92,22 @@ export function createTransactionsTestKit(
   });
   queryClient.setQueryData(queryKeys.households.mine(), [household]);
 
+  const budgetRepository = new InMemoryBudgetRepository(repository, {
+    seedDemoData: false,
+    ...options.budgets,
+  });
+
   const base = createContainer({ dataSource: 'memory' });
   const container = {
     ...base,
+    budgets: {
+      budgetRepository,
+      listBudgets: new ListBudgets(budgetRepository),
+      createBudget: new CreateBudget(budgetRepository),
+      updateBudgetLimit: new UpdateBudgetLimit(budgetRepository),
+      deleteBudget: new DeleteBudget(budgetRepository),
+      moveBudgetAmount: new MoveBudgetAmount(budgetRepository),
+    },
     transactions: {
       transactionRepository: repository,
       getMonthlySummary: new GetMonthlySummary(repository, 'EUR'),
@@ -105,5 +131,5 @@ export function createTransactionsTestKit(
     );
   }
 
-  return { Wrapper, queryClient, repository, household };
+  return { Wrapper, queryClient, repository, budgetRepository, household };
 }

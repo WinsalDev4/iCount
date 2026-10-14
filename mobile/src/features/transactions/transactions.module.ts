@@ -1,6 +1,6 @@
 import type { DataSource } from '@/core/config/env';
 
-import { InMemoryTransactionRepository } from './data/InMemoryTransactionRepository';
+import { sharedMemoryTransactionRepository } from './data/sharedMemoryRepository';
 import type { TransactionRepository } from './domain/TransactionRepository';
 import { CreateTransaction } from './domain/usecases/CreateTransaction';
 import {
@@ -47,7 +47,7 @@ export type TransactionsModule = ReturnType<typeof createTransactionsModule>;
 function createRepository(dataSource: DataSource): TransactionRepository {
   switch (dataSource) {
     case 'memory':
-      return new InMemoryTransactionRepository();
+      return sharedMemoryTransactionRepository();
     case 'api':
       // ApiTransactionRepository exists (A-3.2); the container picks it in the 3.9 integration.
       throw new Error('transactions: the "api" data source is chosen in the 3.9 integration');

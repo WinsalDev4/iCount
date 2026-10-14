@@ -103,9 +103,13 @@ export function useTransactionDetailViewModel(id: string | undefined) {
 
   const refreshLists = useCallback(
     async (transaction: Transaction) => {
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.transactions.all(transaction.householdId),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.transactions.all(transaction.householdId),
+        }),
+        // Budgets are derived from the movements: editing or deleting one moves their bars.
+        queryClient.invalidateQueries({ queryKey: queryKeys.budgets.all(transaction.householdId) }),
+      ]);
     },
     [queryClient],
   );

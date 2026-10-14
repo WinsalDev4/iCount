@@ -104,9 +104,46 @@ describe('HomeScreen', () => {
     expect(screen.getByText(/ya has gastado más de lo que ha entrado/)).toBeOnTheScreen();
   });
 
-  it('does not show a budgets block yet', async () => {
+  it('hides the budgets block when the month has none', async () => {
     await renderHome([tx('1', 'income', 200_000, 1, 'Nómina')]);
     await waitFor(() => expect(screen.getByText('DISPONIBLE HOY')).toBeOnTheScreen());
-    expect(screen.queryByText(/PRESUPUESTO/i)).toBeNull();
+    expect(screen.queryByText('PRESUPUESTOS')).toBeNull();
+  });
+
+  it('shows the most worrying budgets and a link to all of them', async () => {
+    const kit = createTransactionsTestKit({
+      household: householdOf('shared', true),
+      memory: {
+        transactions: [
+          tx('1', 'income', 200_000, 1, 'Nómina'),
+          tx('2', 'expense', 12_000, 3, 'Cine'),
+        ],
+      },
+    });
+    const month = { year: 2026, month: 10 };
+    for (const [category, limit] of [
+      ['leisure', 30_000],
+      ['food', 10_000], // the demo expense is food: 120 € spent of 100 € → exceeded
+      ['transport', 8_000],
+      ['bills', 9_000],
+    ] as const) {
+      await kit.budgetRepository.create({
+        householdId: 'h1',
+        categoryId: category as CategoryId,
+        month,
+        limit: Money.ofMinor(limit, 'EUR'),
+      });
+    }
+    await render(
+      <SafeAreaProvider initialMetrics={metrics}>
+        <kit.Wrapper>
+          <HomeScreen />
+        </kit.Wrapper>
+      </SafeAreaProvider>,
+    );
+    await waitFor(() => expect(screen.getByText('PRESUPUESTOS')).toBeOnTheScreen());
+    expect(screen.getByText(/Te has pasado 20,00/)).toBeOnTheScreen(); // Comida (the demo movement is food) is exceeded
+    expect(screen.getAllByRole('progressbar')).toHaveLength(3); // at most three
+    expect(screen.getByRole('button', { name: 'Ver los 4 presupuestos' })).toBeOnTheScreen();
   });
 });

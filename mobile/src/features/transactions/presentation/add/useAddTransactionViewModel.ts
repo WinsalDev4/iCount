@@ -106,7 +106,11 @@ export function useAddTransactionViewModel() {
             prependToPage(current, toOptimisticTransaction(input, me ?? ('me' as UserId))),
         },
       ],
-      invalidate: [queryKeys.transactions.all(householdId ?? '')],
+      // A new expense also moves the bars of the budgets.
+      invalidate: [
+        queryKeys.transactions.all(householdId ?? ''),
+        queryKeys.budgets.all(householdId ?? ''),
+      ],
     }),
   );
 

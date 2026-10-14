@@ -4,10 +4,18 @@ import { useMemo } from 'react';
 import { useDependencies } from '@/core/di/DependenciesProvider';
 import { Money } from '@/core/domain/Money';
 import { queryKeys } from '@/core/query/queryKeys';
+import { sortByUrgency, summarizeBudgets } from '@/features/budgets/domain/budgetProgress';
+import {
+  remainingLabel as remainingText,
+  toRow,
+  type BudgetRow,
+} from '@/features/budgets/presentation/useBudgetsViewModel';
+import { useCategories } from '@/features/categories/presentation/useCategories';
 import { useActiveHousehold } from '@/features/household/presentation/households';
 
 import { startOfDay } from '../../domain/calendar';
 import type { AllowanceStatus } from '../../domain/dailyAllowance';
+import { monthOf } from '../../domain/monthGrid';
 import type { Transaction } from '../../domain/Transaction';
 
 export interface WeekBar {
@@ -30,6 +38,15 @@ export interface RecentRow {
   readonly tone: 'income' | 'expense';
 }
 
+/** The budgets block of Inicio: the most worrying ones and the month total. */
+export interface BudgetsBlock {
+  readonly rows: readonly BudgetRow[];
+  /** "Quedan 258,00 €" for all the budgets together. */
+  readonly totalLabel: string;
+  /** How many budgets exist in total (the block shows at most three). */
+  readonly count: number;
+}
+
 export type HomeUiState =
   | { readonly status: 'loading' }
   | { readonly status: 'error'; readonly message: string }
@@ -46,8 +63,8 @@ export type HomeUiState =
       readonly weekBars: readonly WeekBar[];
       readonly weekTotal: string;
       readonly recent: readonly RecentRow[];
-      /** Budgets arrive in phase 4 (B-4.1); the slot exists so Inicio does not need reshaping. */
-      readonly budgets: null;
+      /** `null` while loading, on error or when the month has no budgets: the block is hidden. */
+      readonly budgets: BudgetsBlock | null;
     };
 
 const weekdayLong = new Intl.DateTimeFormat('es-ES', { weekday: 'long' });
@@ -70,11 +87,14 @@ function signed(tx: Transaction): string {
 export function useHomeViewModel() {
   const { getDailyAllowance, getWeeklySpending, getRecentTransactions } =
     useDependencies().transactions;
+  const { listBudgets } = useDependencies().budgets;
   const household = useActiveHousehold();
   const householdId = household?.id ?? '';
   const today = useMemo(() => startOfDay(new Date()), []);
   const dayKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
   const enabled = household !== undefined;
+  const categories = useCategories(household?.id);
+  const month = useMemo(() => monthOf(today), [today]);
 
   const allowance = useQuery({
     queryKey: [...queryKeys.transactions.all(householdId), 'allowance', dayKey],
@@ -96,6 +116,12 @@ export function useHomeViewModel() {
     enabled,
   });
 
+  const budgets = useQuery({
+    queryKey: queryKeys.budgets.month(householdId, month),
+    queryFn: () => listBudgets.execute(householdId, month),
+    enabled,
+  });
+
   const state = useMemo<HomeUiState>(() => {
     if (!household) return { status: 'loading' };
     if (allowance.error ?? week.error ?? recent.error) {
@@ -104,6 +130,20 @@ export function useHomeViewModel() {
     if (!allowance.data || !week.data || !recent.data) return { status: 'loading' };
 
     const a = allowance.data;
+
+    // A failing or empty budgets query only hides its own block: Inicio still works without it.
+    let budgetsBlock: BudgetsBlock | null = null;
+    if (budgets.data && budgets.data.length > 0) {
+      const names = new Map((categories.data ?? []).map((c) => [c.id as string, c.name]));
+      const totals = summarizeBudgets(budgets.data, household.currency);
+      budgetsBlock = {
+        rows: sortByUrgency(budgets.data)
+          .slice(0, 3)
+          .map((b) => toRow(b, names.get(b.categoryId) ?? 'Sin categoría')),
+        totalLabel: remainingText(totals.remaining),
+        count: budgets.data.length,
+      };
+    }
     const currency = a.monthBalance.currency;
     const maxSpent = Math.max(0, ...week.data.map((d) => d.spent.amountMinor));
     const weekTotalMinor = week.data.reduce((sum, d) => sum + d.spent.amountMinor, 0);
@@ -138,7 +178,7 @@ export function useHomeViewModel() {
         amount: signed(tx),
         tone: tx.type === 'income' ? 'income' : 'expense',
       })),
-      budgets: null,
+      budgets: budgetsBlock,
     };
   }, [
     household,
@@ -148,8 +188,11 @@ export function useHomeViewModel() {
     week.error,
     recent.data,
     recent.error,
+    budgets.data,
+    categories.data,
   ]);
 
-  const refresh = () => Promise.all([allowance.refetch(), week.refetch(), recent.refetch()]);
+  const refresh = () =>
+    Promise.all([allowance.refetch(), week.refetch(), recent.refetch(), budgets.refetch()]);
   return { state, refresh };
 }

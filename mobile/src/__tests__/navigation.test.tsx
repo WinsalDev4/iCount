@@ -6,6 +6,7 @@ import { accessStore } from '@/features/auth/data/accessStore';
 import { authPreferencesStore } from '@/features/auth/data/authPreferencesStore';
 import { InMemoryAuthRepository } from '@/features/auth/data/InMemoryAuthRepository';
 import type { Session } from '@/features/auth/domain/User';
+import { resetSharedMemoryTransactionRepository } from '@/features/transactions/data/sharedMemoryRepository';
 import { setupStore } from '@/features/household/data/setupStore';
 import { InMemoryHouseholdRepository } from '@/features/household/data/InMemoryHouseholdRepository';
 import type { Household } from '@/features/household/domain/Household';
@@ -82,6 +83,7 @@ async function renderApp({
   jest.spyOn(InMemoryAuthRepository.prototype, 'getSession').mockResolvedValue(session);
   jest.spyOn(InMemoryHouseholdRepository.prototype, 'getMine').mockResolvedValue(households);
   setupStore.setState({ pendingHouseholdId: null });
+  resetSharedMemoryTransactionRepository();
   mockBiometrics.isAvailable.mockResolvedValue(biometricsAvailable);
   mockBiometrics.authenticate.mockResolvedValue(biometricPasses);
   await act(async () => {
@@ -331,6 +333,23 @@ describe('navigation', () => {
 
   it('keeps a signed-out user out of a movement deep link', async () => {
     await renderApp({ session: null, initialUrl: '/transaction/nope' });
+    expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();
+  });
+
+  it('Planificar leads to the budgets list and back', async () => {
+    await renderApp({ initialUrl: '/plan' });
+    await fireEvent.press(screen.getByRole('button', { name: 'Presupuestos' }));
+    await settle();
+    await settle();
+    expect(screen.getByRole('header', { name: 'Presupuestos' })).toBeOnTheScreen();
+    expect(screen.getByRole('button', { name: 'Nuevo presupuesto' })).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Volver' }));
+    await settle();
+    expect(screen.getByRole('tab', { name: 'Planificar' })).toBeSelected();
+  });
+
+  it('keeps a signed-out user out of the budgets deep link', async () => {
+    await renderApp({ session: null, initialUrl: '/budgets' });
     expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();
   });
 
