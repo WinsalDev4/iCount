@@ -43,5 +43,6 @@ import { BudgetsController } from './interface/http/budgets.controller.js';
         new UseCase(access, budgets),
     })),
   ],
+  exports: [BudgetRepository],
 })
 export class BudgetsModule {}

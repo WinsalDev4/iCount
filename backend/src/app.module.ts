@@ -3,6 +3,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { ActivityLogModule, ActivityModule } from './modules/activity/activity.module.js';
+import { AdvisorModule } from './modules/advisor/advisor.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { BudgetsModule } from './modules/budgets/budgets.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
@@ -42,6 +43,7 @@ export class AppModule {
       DebtsModule,
       SettlementsModule,
       ActivityModule,
+      AdvisorModule,
       // The template module is a reference for new modules, not a product feature.
       ...(config.nodeEnv === 'production' ? [] : [NotesModule]),
     ];

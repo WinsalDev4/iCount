@@ -19,6 +19,10 @@ const envSchema = z.object({
   MAGIC_LINK_URL: z.url().default('icount://auth/verify'),
   /** Optional: only needed when "enhanced push security" is on in the Expo project (ADR-0017). */
   EXPO_ACCESS_TOKEN: z.string().min(1).optional(),
+  /** AI advisor (ADR-0020). Without it the advisor uses the detectors' default wording and chat answers 503. */
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  /** Chat messages per user and day (cost quota). */
+  ADVISOR_DAILY_CHAT_QUOTA: z.coerce.number().int().min(0).max(1_000).default(20),
 });
 
 export type NodeEnv = z.infer<typeof envSchema>['NODE_ENV'];
@@ -41,6 +45,11 @@ export interface PushConfig {
   readonly expoAccessToken: string | null;
 }
 
+export interface AdvisorConfig {
+  readonly anthropicApiKey: string | null;
+  readonly dailyChatQuota: number;
+}
+
 export interface AppConfig {
   readonly nodeEnv: NodeEnv;
   readonly port: number;
@@ -49,6 +58,7 @@ export interface AppConfig {
   readonly auth: AuthConfig;
   readonly mail: MailConfig;
   readonly push: PushConfig;
+  readonly advisor: AdvisorConfig;
 }
 
 /** Injection token for the validated configuration. */
@@ -83,5 +93,9 @@ export function loadConfig(env: Record<string, string | undefined>): AppConfig {
     },
     mail: { smtpUrl: env_.SMTP_URL, from: env_.MAIL_FROM },
     push: { expoAccessToken: env_.EXPO_ACCESS_TOKEN ?? null },
+    advisor: {
+      anthropicApiKey: env_.ANTHROPIC_API_KEY ?? null,
+      dailyChatQuota: env_.ADVISOR_DAILY_CHAT_QUOTA,
+    },
   };
 }

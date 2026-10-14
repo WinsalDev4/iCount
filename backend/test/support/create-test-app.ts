@@ -46,7 +46,16 @@ export interface TestApp {
 type ConfigOverrides = Partial<Omit<AppConfig, 'auth' | 'mail'>>;
 
 /** Boots the real AppModule (real Postgres, real filters, pipes and guards) with test config. */
-export async function createTestApp(overrides: ConfigOverrides = {}): Promise<TestApp> {
+/** A provider to replace, e.g. the AI model with a scripted fake. */
+export interface ProviderOverride {
+  readonly provide: unknown;
+  readonly useValue: unknown;
+}
+
+export async function createTestApp(
+  overrides: ConfigOverrides = {},
+  providers: readonly ProviderOverride[] = [],
+): Promise<TestApp> {
   const config: AppConfig = {
     ...loadConfig({
       NODE_ENV: 'test',
@@ -59,12 +68,15 @@ export async function createTestApp(overrides: ConfigOverrides = {}): Promise<Te
 
   const emails = new InMemoryEmailSender();
   const push = new InMemoryPushSender();
-  const moduleRef = await Test.createTestingModule({ imports: [AppModule.forRoot(config)] })
+  let builder = Test.createTestingModule({ imports: [AppModule.forRoot(config)] })
     .overrideProvider(EmailSender)
     .useValue(emails)
     .overrideProvider(PushSender)
-    .useValue(push)
-    .compile();
+    .useValue(push);
+  for (const { provide, useValue } of providers) {
+    builder = builder.overrideProvider(provide).useValue(useValue);
+  }
+  const moduleRef = await builder.compile();
   const app = moduleRef.createNestApplication<INestApplication<App>>({ bufferLogs: true });
   configureApp(app);
   await app.init();

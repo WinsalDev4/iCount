@@ -78,6 +78,6 @@ import { RecurringController } from './interface/http/recurring.controller.js';
     },
     RecurringScheduler,
   ],
-  exports: [MaterializeDueRecurringPayments],
+  exports: [MaterializeDueRecurringPayments, RecurringPaymentRepository],
 })
 export class RecurringModule {}

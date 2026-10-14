@@ -20,6 +20,7 @@ describe('loadConfig', () => {
       },
       mail: { smtpUrl: 'smtp://localhost:1025', from: 'iCount <no-reply@icount.local>' },
       push: { expoAccessToken: null },
+      advisor: { anthropicApiKey: null, dailyChatQuota: 20 },
     });
   });
 
