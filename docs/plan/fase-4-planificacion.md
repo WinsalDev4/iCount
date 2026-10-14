@@ -59,7 +59,7 @@ Backend: módulo debts (CRUD, pagos enlazados a transacciones de la categoría p
 
 ## Pista B · Sonnet
 
-### [ ] B-4.1 · Presupuestos (07-A)
+### [x] B-4.1 · Presupuestos (07-A)
 - **Rama:** `feature/b-4.1-presupuestos` · **Depende de:** 4.0
 - **Ficheros exclusivos:** `mobile/src/features/budgets/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/budgets/budgets.module.ts`, `mobile/src/app/(tabs)/plan*`, `mobile/src/app/budgets/**`, `docs/features/presupuestos.md`
 - **Hecho cuando:** pestaña Planificar con la entrada a Presupuestos, Deudas y Recurrentes; lista de presupuestos con barras, restante o exceso (en rojo si se supera); crear y editar presupuesto; acción "mover importe entre presupuestos"; se activa el bloque de presupuestos de Inicio; tests.
