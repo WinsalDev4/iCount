@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createStore, useStore } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 
+import { hydrationTracker } from '@/shared/state/persistedStore';
+
 export interface OnboardingState {
   /** Persisted: the user has seen (or skipped) the intro. */
   readonly onboardingCompleted: boolean;
@@ -19,6 +21,7 @@ export const ONBOARDING_STORAGE_KEY = 'icount.onboarding';
  * Kotlin analogy: a DataStore<Preferences> exposed as a Flow; SwiftUI: @AppStorage.
  */
 export function createOnboardingStore(storage: StateStorage) {
+  const hydration = hydrationTracker();
   const store = createStore<OnboardingState>()(
     persist(
       (set) => ({
@@ -32,21 +35,13 @@ export function createOnboardingStore(storage: StateStorage) {
         version: 1,
         storage: createJSONStorage(() => storage),
         partialize: (state) => ({ onboardingCompleted: state.onboardingCompleted }),
-        // zustand does not signal "hydrated" when the read fails: without this the UI would wait
-        // forever. On error we start with the defaults (intro shown) instead of blocking the app.
         onRehydrateStorage: () => (_state, error) => {
-          if (error) queueMicrotask(markHydrated);
+          if (error) hydration.readFailed();
         },
       },
     ),
   );
-
-  // Storage may be sync (tests) or async (AsyncStorage): handle both orders.
-  function markHydrated() {
-    store.setState({ hydrated: true });
-  }
-  if (store.persist.hasHydrated()) markHydrated();
-  else store.persist.onFinishHydration(markHydrated);
+  hydration.attach(store);
   return store;
 }
 

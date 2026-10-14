@@ -16,5 +16,7 @@ export {
   type SegmentedControlProps,
   type SegmentedOption,
 } from './SegmentedControl';
+export { SwitchRow, type SwitchRowProps } from './SwitchRow';
 export { TabBar, type TabBarItem, type TabBarProps } from './TabBar';
+export { TextField, type TextFieldProps } from './TextField';
 export { theme } from './theme';
