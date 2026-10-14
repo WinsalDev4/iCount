@@ -364,6 +364,26 @@ describe('navigation', () => {
     expect(screen.getByText('¿Y SI PAGAS DE MÁS CADA MES?')).toBeOnTheScreen();
   });
 
+  it('Planificar leads to the recurring payments, the calendar and back', async () => {
+    await renderApp({ initialUrl: '/plan' });
+    await fireEvent.press(screen.getByRole('button', { name: 'Recurrentes' }));
+    await settle();
+    await settle();
+    expect(screen.getByRole('header', { name: 'Recurrentes' })).toBeOnTheScreen();
+    expect(screen.getByText('TUS PAGOS RECURRENTES')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('tab', { name: 'Calendario' }));
+    await settle();
+    expect(screen.getByLabelText('Calendario del mes')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Volver' }));
+    await settle();
+    expect(screen.getByRole('tab', { name: 'Planificar' })).toBeSelected();
+  });
+
+  it('keeps a signed-out user out of the recurring deep link', async () => {
+    await renderApp({ session: null, initialUrl: '/recurring' });
+    expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();
+  });
+
   it('keeps a signed-out user out of the debts deep link', async () => {
     await renderApp({ session: null, initialUrl: '/debts' });
     expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();

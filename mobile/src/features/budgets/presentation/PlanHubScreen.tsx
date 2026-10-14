@@ -32,7 +32,7 @@ const entries: readonly PlanEntry[] = [
     title: 'Recurrentes',
     description: 'Facturas, letras y suscripciones con su recordatorio.',
     icon: 'home',
-    href: null,
+    href: '/recurring',
   },
 ];
 

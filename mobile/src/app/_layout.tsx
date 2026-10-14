@@ -87,6 +87,7 @@ function AccessStack() {
         <Stack.Screen name="transaction/[id]" />
         <Stack.Screen name="budgets" />
         <Stack.Screen name="debts" />
+        <Stack.Screen name="recurring" />
         <Stack.Screen name="dev/catalog" />
       </Stack.Protected>
     </Stack>
