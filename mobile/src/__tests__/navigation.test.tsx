@@ -11,6 +11,7 @@ import { InMemoryHouseholdRepository } from '@/features/household/data/InMemoryH
 import type { Household } from '@/features/household/domain/Household';
 import { onboardingStore } from '@/features/onboarding/data/onboardingStore';
 
+jest.mock('@shopify/flash-list', () => jest.requireActual('@/shared/testing/flashListStub'));
 jest.mock('@react-native-async-storage/async-storage', () =>
   jest.requireActual('@react-native-async-storage/async-storage/jest/async-storage-mock'),
 );
@@ -289,13 +290,48 @@ describe('navigation', () => {
   });
 
   it.each([
-    ['/history', 'Historial'],
     ['/plan', 'Planificar'],
     ['/household', 'Hogar'],
   ])('deep link %s lands on its tab', async (url, label) => {
     await renderApp({ initialUrl: url });
     expect(screen.getByRole('tab', { name: label })).toBeSelected();
     expect(screen.getByRole('header', { name: label })).toBeOnTheScreen();
+  });
+
+  it('deep link /history lands on the history tab with its calendar', async () => {
+    await renderApp({ initialUrl: '/history' });
+    expect(screen.getByRole('tab', { name: 'Historial' })).toBeSelected();
+    expect(screen.getByRole('button', { name: 'Mes anterior' })).toBeOnTheScreen();
+    expect(screen.getByLabelText('Calendario del mes')).toBeOnTheScreen();
+  });
+
+  it('opens a movement from the history and comes back', async () => {
+    await renderApp();
+    await fireEvent.press(screen.getByRole('tab', { name: 'Historial' }));
+    await settle();
+    // Demo data: pick any day of the calendar that has spending by searching all dates.
+    await fireEvent.press(screen.getByRole('tab', { name: 'Gastos' }));
+    await settle();
+    await settle();
+    await fireEvent.press(screen.getAllByRole('button', { name: /Alquiler/ })[0] as never);
+    await settle();
+    expect(screen.getByRole('button', { name: 'Editar' })).toBeOnTheScreen();
+    expect(screen.getAllByText('Alquiler').length).toBeGreaterThan(0);
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Volver' }));
+    await settle();
+    expect(screen.getByRole('tab', { name: 'Historial' })).toBeSelected();
+  });
+
+  it('deep link /transaction/<id> explains a movement that does not exist', async () => {
+    await renderApp({ initialUrl: '/transaction/nope' });
+    await settle();
+    expect(screen.getByText('Este movimiento ya no existe')).toBeOnTheScreen();
+  });
+
+  it('keeps a signed-out user out of a movement deep link', async () => {
+    await renderApp({ session: null, initialUrl: '/transaction/nope' });
+    expect(screen.getByRole('header', { name: 'Entra sin contraseña' })).toBeOnTheScreen();
   });
 
   it('switches tab when the bar is tapped', async () => {

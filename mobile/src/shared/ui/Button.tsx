@@ -9,7 +9,7 @@ import {
 import { AppText, type TextTone } from './AppText';
 import { theme } from './theme';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 export type ButtonProps = {
   label: string;
@@ -25,6 +25,7 @@ const labelTone: Record<ButtonVariant, TextTone> = {
   primary: 'onAccent',
   secondary: 'text',
   ghost: 'accent',
+  danger: 'onAccent',
 };
 
 export function Button({
@@ -56,7 +57,11 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator
-          color={variant === 'primary' ? theme.colors.onAccent : theme.colors.accent}
+          color={
+            variant === 'primary' || variant === 'danger'
+              ? theme.colors.onAccent
+              : theme.colors.accent
+          }
         />
       ) : (
         <AppText variant="body" tone={labelTone[variant]} style={styles.label}>
@@ -88,4 +93,5 @@ const variantStyles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
   },
   ghost: { backgroundColor: 'transparent' },
+  danger: { backgroundColor: theme.colors.expense },
 });

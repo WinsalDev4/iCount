@@ -1,13 +1,4 @@
-import { PlaceholderScreen } from '@/shared/ui/PlaceholderScreen';
+import { HistoryScreen } from '@/features/transactions/presentation/history/HistoryScreen';
 
-/** Provisional: B-3.3 replaces this with the history calendar. */
-export default function HistoryRoute() {
-  return (
-    <PlaceholderScreen
-      title="Historial"
-      icon="list"
-      description="Aquí verás todos tus movimientos en un calendario de intensidad."
-      edges={['top', 'left', 'right']}
-    />
-  );
-}
+/** Route files stay thin: they only map a URL to a feature screen. */
+export default HistoryScreen;

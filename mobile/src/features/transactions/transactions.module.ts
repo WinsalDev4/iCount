@@ -3,6 +3,13 @@ import type { DataSource } from '@/core/config/env';
 import { InMemoryTransactionRepository } from './data/InMemoryTransactionRepository';
 import type { TransactionRepository } from './domain/TransactionRepository';
 import { CreateTransaction } from './domain/usecases/CreateTransaction';
+import {
+  DeleteTransaction,
+  GetDailyTotals,
+  GetTransaction,
+  ListTransactions,
+  UpdateTransaction,
+} from './domain/usecases/TransactionUseCases';
 import { GetDailyAllowance } from './domain/usecases/GetDailyAllowance';
 import { GetMonthlySummary } from './domain/usecases/GetMonthlySummary';
 import { GetRecentTransactions } from './domain/usecases/GetRecentTransactions';
@@ -27,6 +34,11 @@ export function createTransactionsModule({ dataSource }: TransactionsModuleConfi
     getDailyAllowance: new GetDailyAllowance(repository, 'EUR'),
     getWeeklySpending: new GetWeeklySpending(repository, 'EUR'),
     getRecentTransactions: new GetRecentTransactions(repository),
+    listTransactions: new ListTransactions(repository),
+    getTransaction: new GetTransaction(repository),
+    getDailyTotals: new GetDailyTotals(repository),
+    updateTransaction: new UpdateTransaction(repository),
+    deleteTransaction: new DeleteTransaction(repository),
   };
 }
 
