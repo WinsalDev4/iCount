@@ -24,3 +24,4 @@ Rama: feature/<nombre> · Estado: en curso | hecho
 | [Inicio](inicio.md) | Hecho (sin comprobación en dispositivo) |
 | [Historial y detalle](historial.md) | Hecho (sin comprobación en dispositivo) |
 | [Planificar y presupuestos](presupuestos.md) | Hecho (sin comprobación en dispositivo) |
+| [Deudas](deudas.md) | Hecho (sin comprobación en dispositivo) |

@@ -70,7 +70,7 @@ Implementa la pestaña Planificar (hub a Presupuestos / Deudas / Recurrentes) y 
 Casos de uso + InMemoryBudgetRepository + budgets.module.ts. Tests. docs/features/presupuestos.md.
 ```
 
-### [ ] B-4.2 · Deudas (08-B + estrategia)
+### [x] B-4.2 · Deudas (08-B + estrategia)
 - **Rama:** `feature/b-4.2-deudas` · **Depende de:** B-4.1 y **A-4.1** (motor financiero en `develop`)
 - **Ficheros exclusivos:** `mobile/src/features/debts/{domain/usecases,data/InMemory*,presentation}/**`, `mobile/src/features/debts/debts.module.ts`, `mobile/src/app/debts/**`, `docs/features/deudas.md`
 - **Hecho cuando:** lista de deudas con total pendiente; detalle con anillo de progreso, cuota y fecha de fin; simulador de pago extra (chips 50/100/200) calculado en el dispositivo con `@icount/finance`; sección de estrategia avalancha frente a bola de nieve; alta y edición de deudas; tests.
