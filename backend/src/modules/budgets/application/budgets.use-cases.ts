@@ -131,15 +131,14 @@ export class MoveBudgetAmount {
 
   execute(
     actorId: string,
-    householdId: string,
     move: { fromId: string; toId: string; amountMinor: number; currency: string },
   ): Promise<[BudgetWithSpending, BudgetWithSpending]> {
     return this.runner.run(async () => {
-      await this.access.requireMember(householdId, actorId);
+      // Membership is checked on each budget's household.
       const from = await loadForMember(this.budgets, this.access, move.fromId, actorId);
       const to = await loadForMember(this.budgets, this.access, move.toId, actorId);
-      if (from.householdId !== householdId || to.householdId !== householdId) {
-        throw new InvalidBudgetMoveError('Both budgets must belong to this household.');
+      if (from.householdId !== to.householdId) {
+        throw new InvalidBudgetMoveError('Both budgets must belong to the same household.');
       }
       if (from.month !== to.month) {
         throw new InvalidBudgetMoveError('Both budgets must be of the same month.');

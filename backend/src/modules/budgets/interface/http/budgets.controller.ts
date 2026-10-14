@@ -88,17 +88,16 @@ export class BudgetsController {
     );
   }
 
-  @Post('households/:householdId/budgets/move')
+  @Post('budgets/move')
   @HttpCode(HttpStatus.OK)
   @ApiBody({ schema: zodToOpenApi(moveBudgetAmountRequestSchema, 'input') })
   @ApiOkResponse({ schema: zodToOpenApi(z.array(budgetDtoSchema)) })
   @ApiProblemResponses(400, 401, 404, 422)
   async move(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('householdId', uuidParam) householdId: string,
     @Body(new ZodValidationPipe(moveBudgetAmountRequestSchema)) body: MoveBudgetAmountRequest,
   ): Promise<BudgetDto[]> {
-    const moved = await this.moveBudgetAmount.execute(user.userId, householdId, {
+    const moved = await this.moveBudgetAmount.execute(user.userId, {
       fromId: body.fromBudgetId,
       toId: body.toBudgetId,
       amountMinor: body.amount.amountMinor,

@@ -29,7 +29,7 @@ export const createBudgetRequestSchema = z.object({
 export const updateBudgetRequestSchema = z.object({ limit: positiveMoneySchema });
 
 /**
- * POST /v1/households/:id/budgets/move → BudgetDto[] (both budgets).
+ * POST /v1/budgets/move → BudgetDto[] (both budgets).
  * Moves part of one budget's limit to another of the same month; the total stays the same.
  */
 export const moveBudgetAmountRequestSchema = z

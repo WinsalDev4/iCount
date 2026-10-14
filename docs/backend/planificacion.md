@@ -8,7 +8,7 @@ Código en `backend/src/modules/{budgets,recurring}`; contratos en `@icount/cont
 |---|---|
 | `GET /v1/households/:id/budgets?month=YYYY-MM` | Presupuestos del mes con **gastado** y **restante** (negativo si se supera) |
 | `POST /v1/households/:id/budgets` | Crea uno por categoría y mes (409 si ya existe) |
-| `POST /v1/households/:id/budgets/move` | Mueve importe de un presupuesto a otro del mismo mes |
+| `POST /v1/budgets/move` | Mueve importe de un presupuesto a otro del mismo mes y hogar |
 | `PATCH / DELETE /v1/budgets/:id` | Cambia el límite o lo borra |
 
 - **El gastado se calcula al leer**, con una subconsulta correlacionada que suma los gastos de esa categoría en ese mes, apoyada en el índice `(household_id, occurred_on…)` de movimientos. Nunca se desincroniza: editar o borrar un gasto actualiza el presupuesto sin código extra. Si hubiera muchos presupuestos, se cambiaría por un `GROUP BY` o una vista materializada.

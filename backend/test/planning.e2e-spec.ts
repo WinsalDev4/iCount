@@ -97,14 +97,14 @@ describe('budgets and recurring payments (e2e)', () => {
       const leisure = (await createBudget('leisure', 10_000).expect(201)).body;
 
       const moved = await http()
-        .post(`/v1/households/${householdId}/budgets/move`)
+        .post('/v1/budgets/move')
         .set(ana.headers)
         .send({ fromBudgetId: leisure.id, toBudgetId: food.id, amount: eur(5_000) })
         .expect(200);
       expect(moved.body.map((b: { limit: unknown }) => b.limit)).toEqual([eur(5_000), eur(45_000)]);
 
       const tooMuch = await http()
-        .post(`/v1/households/${householdId}/budgets/move`)
+        .post('/v1/budgets/move')
         .set(ana.headers)
         .send({ fromBudgetId: leisure.id, toBudgetId: food.id, amount: eur(5_000) })
         .expect(422);
