@@ -1,5 +1,6 @@
-import type { DataSource } from '@/core/config/env';
+import { type FeatureContext, requireApi } from '@/core/di/FeatureContext';
 
+import { ApiTransactionRepository } from './data/api/ApiTransactionRepository';
 import { sharedMemoryTransactionRepository } from './data/sharedMemoryRepository';
 import type { TransactionRepository } from './domain/TransactionRepository';
 import { CreateTransaction } from './domain/usecases/CreateTransaction';
@@ -15,17 +16,13 @@ import { GetMonthlySummary } from './domain/usecases/GetMonthlySummary';
 import { GetRecentTransactions } from './domain/usecases/GetRecentTransactions';
 import { GetWeeklySpending } from './domain/usecases/GetWeeklySpending';
 
-export interface TransactionsModuleConfig {
-  readonly dataSource: DataSource;
-}
-
 /**
  * Feature module: wires the transactions feature (repository → use cases) and
  * exposes only what presentation needs. Kotlin analogy: a Koin `module { }` or a
  * Hilt `@Module` scoped to one feature; the container just composes modules.
  */
-export function createTransactionsModule({ dataSource }: TransactionsModuleConfig) {
-  const repository = createRepository(dataSource);
+export function createTransactionsModule(context: FeatureContext) {
+  const repository = createRepository(context);
 
   return {
     transactionRepository: repository,
@@ -44,12 +41,11 @@ export function createTransactionsModule({ dataSource }: TransactionsModuleConfi
 
 export type TransactionsModule = ReturnType<typeof createTransactionsModule>;
 
-function createRepository(dataSource: DataSource): TransactionRepository {
-  switch (dataSource) {
+function createRepository(context: FeatureContext): TransactionRepository {
+  switch (context.dataSource) {
     case 'memory':
       return sharedMemoryTransactionRepository();
     case 'api':
-      // ApiTransactionRepository exists (A-3.2); the container picks it in the 3.9 integration.
-      throw new Error('transactions: the "api" data source is chosen in the 3.9 integration');
+      return new ApiTransactionRepository(requireApi(context, 'transactions').http);
   }
 }

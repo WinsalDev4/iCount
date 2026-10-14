@@ -1,6 +1,6 @@
-import type { DataSource } from '@/core/config/env';
-import { notImplemented } from '@/core/di/notImplemented';
+import { type FeatureContext, requireApi } from '@/core/di/FeatureContext';
 
+import { ApiHouseholdRepository } from './data/api/ApiHouseholdRepository';
 import { InMemoryHouseholdRepository } from './data/InMemoryHouseholdRepository';
 import type { HouseholdRepository } from './domain/HouseholdRepository';
 import { CreateHousehold } from './domain/usecases/CreateHousehold';
@@ -10,20 +10,15 @@ import { JoinHousehold } from './domain/usecases/JoinHousehold';
 import { SetMyIncome } from './domain/usecases/SetMyIncome';
 import { SetSplitRule } from './domain/usecases/SetSplitRule';
 
-export interface HouseholdModuleConfig {
-  readonly dataSource: DataSource;
-}
-
 /**
- * Feature module: repository → use cases. `memory` keeps everything in the device; the `api`
- * source is picked in the 2.9 integration (ApiHouseholdRepository needs the authenticated
- * client that the container owns), so for now it stays a stub.
+ * Feature module: repository → use cases. `memory` keeps everything in the device; `api` uses
+ * the authenticated client the container owns.
  */
-export function createHouseholdModule(config: HouseholdModuleConfig) {
+export function createHouseholdModule(context: FeatureContext) {
   const repository: HouseholdRepository =
-    config.dataSource === 'memory'
+    context.dataSource === 'memory'
       ? new InMemoryHouseholdRepository()
-      : notImplemented<HouseholdRepository>(`household(${config.dataSource}).householdRepository`);
+      : new ApiHouseholdRepository(requireApi(context, 'household').http);
 
   return {
     householdRepository: repository,

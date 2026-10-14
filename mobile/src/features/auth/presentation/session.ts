@@ -1,4 +1,5 @@
-import { useQuery, type QueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 import { useDependencies } from '@/core/di/DependenciesProvider';
 
@@ -41,4 +42,15 @@ export function endSession(queryClient: QueryClient): void {
   accessStore.getState().lock();
   queryClient.clear();
   queryClient.setQueryData(sessionQueryKey, null);
+}
+
+/**
+ * When the server rejects the session on its own (revoked, refresh token reused or expired),
+ * forget it here too and go back to sign-in. Only the API data source has a device session.
+ * Android analogy: the OkHttp Authenticator giving up and the app routing to login.
+ */
+export function useSessionExpiry(): void {
+  const { session } = useDependencies();
+  const queryClient = useQueryClient();
+  useEffect(() => session?.onSessionExpired(() => endSession(queryClient)), [session, queryClient]);
 }

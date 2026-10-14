@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 
 import { DependenciesProvider } from '@/core/di/DependenciesProvider';
 import { createQueryClient } from '@/core/query/queryClient';
+import { useSessionExpiry } from '@/features/auth/presentation/session';
 import { useAccess } from '@/features/auth/presentation/useAccess';
 import { theme } from '@/shared/ui/theme';
 
@@ -48,6 +49,7 @@ export default function RootLayout() {
  */
 function AccessStack() {
   const { phase } = useAccess();
+  useSessionExpiry();
 
   useEffect(() => {
     // On a font error we still open the app (system font) instead of trapping the user on the splash.

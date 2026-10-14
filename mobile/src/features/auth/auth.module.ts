@@ -1,7 +1,7 @@
 import { expoBiometrics } from '@/core/auth/biometrics';
-import type { DataSource } from '@/core/config/env';
-import { notImplemented } from '@/core/di/notImplemented';
+import { type FeatureContext, requireApi } from '@/core/di/FeatureContext';
 
+import { ApiAuthRepository } from './data/api/ApiAuthRepository';
 import { InMemoryAuthRepository } from './data/InMemoryAuthRepository';
 import type { AuthRepository } from './domain/AuthRepository';
 import { GetSession } from './domain/usecases/GetSession';
@@ -9,20 +9,12 @@ import { RequestMagicLink } from './domain/usecases/RequestMagicLink';
 import { SignOut } from './domain/usecases/SignOut';
 import { VerifyMagicLink } from './domain/usecases/VerifyMagicLink';
 
-export interface AuthModuleConfig {
-  readonly dataSource: DataSource;
-}
-
 /**
- * Feature module: repository → use cases. `memory` signs in with any token; the `api` source
- * is chosen in the 2.9 integration (ApiAuthRepository needs the shared clients from
- * core/auth/createApiClients, which the container owns), so for now it stays a stub.
+ * Feature module: repository → use cases. `memory` signs in with any token; `api` uses the
+ * public client (auth endpoints) and the device session the container owns.
  */
-export function createAuthModule(config: AuthModuleConfig) {
-  const repository: AuthRepository =
-    config.dataSource === 'memory'
-      ? new InMemoryAuthRepository()
-      : notImplemented<AuthRepository>(`auth(${config.dataSource}).authRepository`);
+export function createAuthModule(context: FeatureContext) {
+  const repository = createRepository(context);
 
   return {
     authRepository: repository,
@@ -36,3 +28,9 @@ export function createAuthModule(config: AuthModuleConfig) {
 }
 
 export type AuthModule = ReturnType<typeof createAuthModule>;
+
+function createRepository(context: FeatureContext): AuthRepository {
+  if (context.dataSource === 'memory') return new InMemoryAuthRepository();
+  const { publicHttp, session } = requireApi(context, 'auth');
+  return new ApiAuthRepository(publicHttp, session);
+}

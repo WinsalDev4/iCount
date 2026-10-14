@@ -1,23 +1,19 @@
-import type { DataSource } from '@/core/config/env';
-import { notImplemented } from '@/core/di/notImplemented';
+import { type FeatureContext, requireApi } from '@/core/di/FeatureContext';
 
+import { ApiCategoryRepository } from './data/api/ApiCategoryRepository';
 import { InMemoryCategoryRepository } from './data/InMemoryCategoryRepository';
 import type { CategoryRepository } from './domain/CategoryRepository';
 import { ListCategories } from './domain/usecases/ListCategories';
 
-export interface CategoriesModuleConfig {
-  readonly dataSource: DataSource;
-}
-
 /**
- * Feature module: repository → use cases. `memory` has the built-in categories; the `api` source
- * (ApiCategoryRepository needs the authenticated client the container owns) is chosen in 3.9.
+ * Feature module: repository → use cases. `memory` has the built-in categories; `api` reads the
+ * household's categories with the authenticated client the container owns.
  */
-export function createCategoriesModule(config: CategoriesModuleConfig) {
+export function createCategoriesModule(context: FeatureContext) {
   const repository: CategoryRepository =
-    config.dataSource === 'memory'
+    context.dataSource === 'memory'
       ? new InMemoryCategoryRepository()
-      : notImplemented<CategoryRepository>(`categories(${config.dataSource}).categoryRepository`);
+      : new ApiCategoryRepository(requireApi(context, 'categories').http);
 
   return {
     categoryRepository: repository,
